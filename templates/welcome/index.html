@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr" xmlns="http://www.w3.org/1999/html">
+{% load static %}
+ <head>
+        {% load static %}
+		<meta charset="utf-8">
+		<title>Madrasa_Tic</title>
+		<!-- css stylesheet -->
+		<link rel="stylesheet" href="{% static 'welcome/style.css' %}">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<!-- scripts -->
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+		<!-- google fonts -->
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,400;1,700&family=Poppins:ital,wght@0,200;1,400;1,500;1,700&display=swap" rel="stylesheet">
+		<!--<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,800&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,800&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Montserrat|Ubuntu" rel="stylesheet">-->
+		<!--  font aesome -->
+		<script src="https://kit.fontawesome.com/959cf16f55.js" crossorigin="anonymous"></script>
+	</head>
+<body>
+<div class="title">
+  <header>
+    <nav class="navbar">
+      <div class="logo"><a href="#">LOGO></a></div>
+      <ul class="menu">
+        <li><a href="#rofi">A propos</a></li>
+        <li><a href="#features">Services</a></li>
+          <li><a href="#cta">Contact</a></li>
+      </ul>
+      <div class="buttons">
+          <a  href="{% url 'signin' %}">
+            <input type="button" value="Connexion" >
+          </a>
+          <a  href="{% url 'signup' %}">
+             <input type="button" value="S'inscrire">
+          </a>
+      </div>
+    </nav>
+    <div class=" text-content">
+
+      <h1>Madrasa_Tic</h1>Une plateforme participative pour le signalement
+                          et la prise en charge des problèmes afin D’améliorer le cadre de vie dans l’école.
+       <div class="row">
+        <div class=" col-lg-6">
+						<img class="title-image" src="{% static 'welcome/images/landing_img.png' %}" alt="profil-photo">
+        </div>
+           </div>
+    </div>
+   <!--<div class="play-button">
+      <span class="play">Play Video</span>
+      <i class="fas fa-play" onclick="click()"></i>
+    </div>-->
+  </header>
+
+</div>
+<!-- Features -->
+		<section id="features">
+			<div class="row">
+				<div class="future-box col-lg-4">
+					<i class="fas fa-check-circle fa-4x just"></i>
+					<h3>Plate-forme utile</h3>
+					<p >L'endroit idéal pour signaler votre problème</p>
+				</div>
+				<div class="future-box col-lg-4">
+					<i class="fas fa-bullseye fa-4x just"></i>
+					<h3>Être à jour.</h3>
+					<p>Jetez un oeil sur les annonces et soyez à jour.</p>
+				</div>
+				<div class="future-box  col-lg-4">
+					<i class="fas fa-heart fa-4x just"></i>
+					<h3>Travail garanti.</h3>
+					<p>Vos problèmes seront réglés le plutôt possible.</p>
+				</div>
+			</div>
+		</section>
+
+
+<!-- Call to Action -->
+		<section id="cta">
+			<h3 class="call-txt">Trouver une solution à vos problèmes.</h3>
+
+            <a  href="{% url 'signup' %}">
+			   <button type="button" class="btn btn-lg btn-dark download-button"> S'inscrire</button>
+            </a>
+            <a  href="{% url 'signin' %}">
+			   <button type="button" class="btn btn-lg btn-outline-light download-button">S'authentifier</button>
+            </a>
+		</section>
+		<!-- Footer -->
+		<footer id="footer">
+            <a href="">
+			 <i class="fab fa-twitter fab-cta"></i>
+            </a>
+            <a href="">
+			<i class="fab fa-facebook-f fab-cta"></i>  </a>
+             <a href="">
+			<i class="fab fa-instagram fab-cta"></i></a>
+            <a href="">
+			<i class="fas fa-envelope fab-cta"></i></a>
+			<p>© Copyright 2022 Madrasa_Tic</p>
+		</footer>
+
+</body>
+<script src="{% static 'welcome/style.js' %}"></script>
+</html>
