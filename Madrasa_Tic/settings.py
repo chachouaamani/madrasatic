@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
-from decouple import config
+#from decouple  import config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,12 +28,17 @@ SECRET_KEY = 'django-insecure-x^&4go=mot)-3cw-ff9t_**&1isp6am!ca%$a4&!6r0yix7sfv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+AUTH_USER_MODEL="users.Users"
 ALLOWED_HOSTS = []
+LOGIN_URL = '/users/signin/'
 
 
 # Application definition
 
 INSTALLED_APPS = [
+  #  'admin_interface',
+   # 'colorfield',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +48,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'welcome.apps.WelcomeConfig',
     'responsable.apps.ResponsableConfig',
+    'home_user.apps.HomeUserConfig',
+    'services.apps.ServicesConfig',
 
 ]
 
@@ -137,6 +144,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'Madrasa_Tic/static')
 ]
+#MEDIA_URL ="/media/"
+#MEDIA_ROOT = os.path.join(BASE_DIR,'media_cdn')
 
 
 # Default primary key field type

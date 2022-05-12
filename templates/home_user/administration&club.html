@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+ {% load static %}
+
+<head>
+
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
+
+
+    <link rel="stylesheet" href="{% static 'home_user/style.css' %}">
+
+    <title>Madrasa_tic</title>
+     <!-- css stylesheet -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+
+
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+</head>
+<body>
+
+
+
+<div class="wrapper">
+  <div class="top_navbar">
+    <div class="hamburger">
+       <div class="one"></div>
+       <div class="two"></div>
+       <div class="three"></div>
+    </div>
+    <div class="top_menu">
+      <div class="logo"><img src="{% static 'services/img/madrasa logonr.png' %}"  style="width: 56px; height: 56px; margin-top: 0px; margin-left: 30px;"></div>
+      <ul>
+        <li><a href="#">
+          <i class="fas fa-bell"></i>
+          </a></li>
+
+          <div class="dropdown">
+            <li><a href="#">
+                <i class="fas fa-user"></i>
+                </a></li>
+            <div class="dropdown-content">
+            <a href="#">compte</a>
+            <a href="#">deconnexion</a>
+
+            </div>
+          </div>
+
+          <li><a href="{% url 'categorie'%}">
+            <i class="fa fa-home"></i>
+            </a></li>
+      </ul>
+    </div>
+  </div>
+     <div class="sidebar">
+      <ul>
+
+        <li><a href="{% url 'historique'%}">
+          <span class="icon"><i class="fas fa-book"></i></span>
+          <span class="title"><b>Acceuil</b></span></a></li>
+
+        <li><a href="{% url 'historique'%}">
+          <span class="icon"><i class="fas fa-volleyball-ball"></i></span>
+          <span class="title"><b>Historique</b></span>
+          </a></li>
+        <li><a href="{% url 'add_announcement'%}">
+          <span class="icon"><i class="fas fa-plus"></i></span>
+          <span class="title"><b>Ajouter annonce</b></span>
+          </a></li>
+
+    </ul>
+
+  </div>
+
+
+
+   <div class="main_container ">
+
+     <section class="amani">
+      <div class="swiper mySwiper container">
+
+    <div class="swiper-wrapper content">
+      {% for annonce in afficher_annonce %}
+
+
+      <div class="swiper-slide card">
+
+
+         <div class="card-content" >
+          <span class="annonce">Annonces</span>
+           <div class="image">
+
+             <img src="{{ annonce.image.url }}" class="img" alt="">
+
+            </div>
+            <div class="contenu">
+              <span class="titre">{{ annonce.titre }}</span>
+              <span class="descrip">
+                <p>
+                  {{ annonce.description }}
+                </p>
+              </span>
+            </div>
+          </div>
+
+        </div>
+          {% endfor %}
+
+
+
+
+      </div>
+
+   <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-pagination"></div>
+
+  </div>
+
+
+</section>
+
+
+<!-- features section starts  -->
+        <section class="features" id="features">
+
+
+    <h1 class="heading"> Les problèmes à signaler </h1>
+
+
+    <div class="box-container ">
+
+
+
+
+       <section class="horizontal row" >
+  {%for cat in categorie%}
+
+        <div class="box col-mb-6">
+
+
+            <h3>{{cat.name}}</h3>
+        <img src="{{cat.image.url}}" alt="">
+            <div class="text_desc">{{cat.description}}</div>
+            <form action="{% url 'signals' id=cat.pk %}">
+
+
+           <button type="submit" class="btn">Voir plus</button>
+
+</form>
+
+        </div>
+         {%endfor%}
+
+
+
+       </section>
+
+
+
+
+
+
+
+   </div>
+        </section>
+
+</div>
+
+
+</div>
+
+<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+<script src="{% static 'home_user/index.js' %}"></script>
+</body>
+</html>

@@ -1,20 +1,31 @@
 import threading
 from django.contrib import messages
+from django.contrib.auth.hashers import make_password, check_password
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
-from .models import Users
+from .models import Users,Service
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_str, force_bytes, DjangoUnicodeDecodeError
+from django.utils.encoding import force_str, force_bytes
 from django.core.mail import EmailMessage
 from .utils import generate_token
 from django.conf import settings
 
 
 
+
+
+
+
 # Create your views here.
+
+def get_user(request):
+    return Users.objects.get(id=request.session['user_id'])
+
+
 
 # for user to not wait
 class EmailThread(threading.Thread):
@@ -73,7 +84,9 @@ def signup(request):
             context['has_error'] = True
 
         if not context['has_error']:
-            user = Users(username=Username, name=Name, surname=Surname, email=Email, password=Password1)
+
+            user = Users(username=Username, first_name=Name, last_name=Surname, email=Email, password=Password1)
+            user.set_password(user.password)
             user.is_active = False
             user.save()
 
@@ -92,26 +105,46 @@ def signup(request):
 def signin(request):
     if request.method == "POST":
         try:
+
             Username = request.POST.get("username")
             Password = request.POST.get("password")
-            user = Users.objects.get(username=Username, password=Password)
 
-            if not user.is_email_verified:
-                messages.error(request, "verifier votre email")
-                return render(request, 'users/login.html')
-            print("Usename=", user)
-            request.session['username'] = user.username
-            messages.add_message(request, messages.SUCCESS, "vous avez sidentifier")
-            return render(request, 'users/home.html')
+            user = Users.objects.get(username=Username)
+
+            checkpassword = check_password(Password, user.password)
+            if checkpassword:
+
+
+
+                if not user.is_active:
+                    messages.add_message(request, messages.ERROR, "votre compte est désactivé")
+                    return render(request, "users/login.html")
+
+                request.session['user_id'] = user.pk
+                request.session['username'] = user.username
+                if 'user_id' in request.session:
+                    user=get_user(request)
+                    messages.add_message(request, messages.SUCCESS, "vous avez sidentifier")
+                    if user.role=="utilisateur":
+                        return redirect(reverse('categorie'))
+                    if user.role=="responsable":
+                        return redirect(reverse('manage'))
+                    service = user.role
+                    if Service.objects.filter(name=service):
+                        return HttpResponse("Hello")
+                    if user.role=="administration" or user.role=="club":
+                        return redirect(reverse('add_announcement'))
+
+
+
+
         except Users.DoesNotExist as e:
             messages.add_message(request, messages.ERROR, "username et password sont invalides")
-            render(request, "users/activate_failed.html")
+            return render(request, "users/login.html")
 
-    return render(request, 'users/login.html')
+    return render(request, "users/login.html")
 
 
-def home(request):
-    return render(request, 'users/home.html')
 
 
 def activate_user(request, uidb64, token):
@@ -122,7 +155,7 @@ def activate_user(request, uidb64, token):
         user = None
 
     if user and generate_token.check_token(user, token):
-        user.is_email_verified = True
+        user.is_active = True
         user.save()
 
         messages.success(request, " email verifier sidentifier maintenant")
@@ -199,9 +232,11 @@ class CompleteResetPassword(View):
             user_id = force_str(urlsafe_base64_decode(uidb64))
             user = Users.objects.get(pk=user_id)
             user.password = Password1
+            user.set_password(user.password)
             user.save()
             messages.add_message(request, messages.SUCCESS, "Mot de passe réinitialisé avec succès!")
             return redirect('signin')
         except Exception as e:
             messages.info(request, "opss,quelque chose s'est mal passé !")
             return render(request, 'users/set-new-password.html', context)
+

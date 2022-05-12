@@ -1,32 +1,44 @@
-from django.shortcuts import render
-from .models import Declaration
+from django.shortcuts import render, redirect
+from home_user.models import Signaux
 from users.models import Users
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
 
-def declaration(request):
-    if request.method == "POST":
-        titre = request.POST.get("title")
-        description = request.POST.get("description")
-        categorie = request.POST.get("categorie")
-        image = request.POST.get("image")
-        date = request.POST.get("date")
-        place = request.POST.get("place")
-        declaration = Declaration(User_id="1",title=titre, description=description, category=categorie, date=date,
-                                  place=place)
-        if len(request.FILES) != 0:
-            declaration.image=request.FILES['image']
-        declaration.save()
 
-    return render(request, "responsable/declaration.html")
 
 
 def manage(request):
 
-    declarations=Declaration.objects.all()
+    declarations = Signaux.objects.all()
 
-    context={
-        'declarations':declarations
+    context = {
+        'declarations': declarations
     }
-    return render(request, 'responsable/manage.html',context)
+    return render(request, 'responsable/manage.html', context)
+
+
+def content(request, id):
+    declarations=Signaux.objects.get(pk=id)
+    context = {
+        'declarations': declarations
+    }
+
+    if request.method == "POST":
+        categorie = request.POST.get("categorie")
+        complement = request.POST.get("complement")
+        service = request.POST.get("service")
+        delete = request.POST.get("delete")
+
+        declarations.category=categorie
+        declarations.complement=complement
+        if (delete):
+            declarations.delete()
+            return redirect('manage')
+        if (service):
+            declarations.validate = True
+        declarations.save()
+
+
+    return render(request, 'responsable/content.html', context)
