@@ -2,7 +2,7 @@ import datetime
 from datetime import date
 
 from django.db import models
-from users.models import Users
+from users.models import Users,Service
 import os
 
 
@@ -33,11 +33,15 @@ class Signaux(models.Model):
     description = models.TextField(max_length=200, default="None", null=False)
     send = models.BooleanField(default=False)
     validate = models.BooleanField(default=False)
-    statut = models.CharField(max_length=50, default="en_cours")
-    complement = models.CharField(null=False, default="anything", max_length=200)
+    statut = models.CharField(max_length=50, default="non_traité")
+    complement = models.CharField(null=True, default="anything", max_length=200)
+    service=models.ForeignKey(Service,on_delete=models.CASCADE, default=1)
+    image = models.ImageField(null=False, blank=True, upload_to=filepath)
 
     def __str__(self):
         return self.titre
+
+
 
 
 class Annonce(models.Model):
@@ -48,7 +52,9 @@ class Annonce(models.Model):
     date_debut = models.DateField(null=False)
     date_fin = models.DateField(null=False)
     validate = models.BooleanField(default=False)
-    publish = models.BooleanField(default=False)
+    status = models.CharField(max_length=255, null=False, default="non_valider")
+
+
 
     @property
     def equal(self):

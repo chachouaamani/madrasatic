@@ -95,3 +95,13 @@ $(document).ready(function(){
       debugger: true,
     });
 
+     $(".image").click(function() {
+            $(this).css({"width": "300px", "height": "auto","transition":"width 0.5s ease"});
+
+          });
+
+          $(".image").dblclick(function() {
+            $(this).css({"width": "150px", "height": "150px","transition":"width 0.5s ease"});
+
+          });
+
