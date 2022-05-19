@@ -1,107 +1,84 @@
-$(document).ready(function(){
-			$(".hamburger").click(function(){
-			   $(".wrapper").toggleClass("collapse");
-			});
-		});
+let searchForm = document.querySelector('.search-form');
 
+document.querySelector('#search-btn').onclick = () =>{
+    searchForm.classList.toggle('active');
+    shoppingCart.classList.remove('active');
+    loginForm.classList.remove('active');
+    navbar.classList.remove('active');
+}
 
+let shoppingCart = document.querySelector('.shopping-cart');
 
-     function hideRow(row) {
-        $("."+ row).toggle();
+document.querySelector('#cart-btn').onclick = () =>{
+    shoppingCart.classList.toggle('active');
+    searchForm.classList.remove('active');
+    loginForm.classList.remove('active');
+    navbar.classList.remove('active');
+}
 
-     }
+let loginForm = document.querySelector('.login-form');
 
+document.querySelector('#login-btn').onclick = () =>{
+    loginForm.classList.toggle('active');
+    searchForm.classList.remove('active');
+    shoppingCart.classList.remove('active');
+    navbar.classList.remove('active');
+}
 
- function myPlugin({ swiper, extendParams, on }) {
-      extendParams({
-        debugger: false,
-      });
+let navbar = document.querySelector('.navbar');
 
-      on('init', () => {
-        if (!swiper.params.debugger) return;
-        console.log('init');
-      });
-      on('click', (swiper, e) => {
-        if (!swiper.params.debugger) return;
-        console.log('click');
-      });
-      on('tap', (swiper, e) => {
-        if (!swiper.params.debugger) return;
-        console.log('tap');
-      });
-      on('doubleTap', (swiper, e) => {
-        if (!swiper.params.debugger) return;
-        console.log('doubleTap');
-      });
-      on('sliderMove', (swiper, e) => {
-        if (!swiper.params.debugger) return;
-        console.log('sliderMove');
-      });
-      on('slideChange', () => {
-        if (!swiper.params.debugger) return;
-        console.log(
-          'slideChange',
-          swiper.previousIndex,
-          '->',
-          swiper.activeIndex
-        );
-      });
-      on('slideChangeTransitionStart', () => {
-        if (!swiper.params.debugger) return;
-        console.log('slideChangeTransitionStart');
-      });
-      on('slideChangeTransitionEnd', () => {
-        if (!swiper.params.debugger) return;
-        console.log('slideChangeTransitionEnd');
-      });
-      on('transitionStart', () => {
-        if (!swiper.params.debugger) return;
-        console.log('transitionStart');
-      });
-      on('transitionEnd', () => {
-        if (!swiper.params.debugger) return;
-        console.log('transitionEnd');
-      });
-      on('fromEdge', () => {
-        if (!swiper.params.debugger) return;
-        console.log('fromEdge');
-      });
-      on('reachBeginning', () => {
-        if (!swiper.params.debugger) return;
-        console.log('reachBeginning');
-      });
-      on('reachEnd', () => {
-        if (!swiper.params.debugger) return;
-        console.log('reachEnd');
-      });
-    }
+document.querySelector('#menu-btn').onclick = () =>{
+    navbar.classList.toggle('active');
+    searchForm.classList.remove('active');
+    shoppingCart.classList.remove('active');
+    loginForm.classList.remove('active');
+}
 
+window.onscroll = () =>{
+    searchForm.classList.remove('active');
+    shoppingCart.classList.remove('active');
+    loginForm.classList.remove('active');
+    navbar.classList.remove('active');
+}
 
-
-    // Init Swiper
-
-    var swiper = new Swiper('.swiper', {
-      // Install Plugin To Swiper
-      modules: [myPlugin],
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
+var swiper = new Swiper(".product-slider", {
+    loop:true,
+    spaceBetween: 20,
+    autoplay: {
+        delay: 7500,
+        disableOnInteraction: false,
+    },
+    centeredSlides: true,
+    breakpoints: {
+      0: {
+        slidesPerView: 1,
       },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
+      768: {
+        slidesPerView: 2,
       },
-      // Enable debugger
-      debugger: true,
-    });
+      1020: {
+        slidesPerView: 3,
+      },
+    },
+});
 
-     $(".image").click(function() {
-            $(this).css({"width": "300px", "height": "auto","transition":"width 0.5s ease"});
-
-          });
-
-          $(".image").dblclick(function() {
-            $(this).css({"width": "150px", "height": "150px","transition":"width 0.5s ease"});
-
-          });
-
+var swiper = new Swiper(".review-slider", {
+    loop:true,
+    spaceBetween: 20,
+    autoplay: {
+        delay: 7500,
+        disableOnInteraction: false,
+    },
+    centeredSlides: true,
+    breakpoints: {
+      0: {
+        slidesPerView: 1,
+      },
+      768: {
+        slidesPerView: 2,
+      },
+      1020: {
+        slidesPerView: 3,
+      },
+    },
+});

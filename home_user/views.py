@@ -5,8 +5,8 @@ from django.shortcuts import render
 from users.models import Users
 from .models import Signaux
 from .models import Catégorie
+from services.models import Rapport
 
-from django.db.models import Q
 
 from django.contrib import messages
 # Create your views here.
@@ -38,7 +38,7 @@ def report_problem (request):
          if 'user_id' in request.session:
              user = get_user(request).pk
 
-         signal=Signaux(user_id=user,titre=titre,category_id=cat_id,lieu=lieu,date=date,heure=heure,send=True,description=desc)
+         signal=Signaux(user_id=user,titre=titre,category_id=cat_id,salle=salle,lieu=lieu,date=date,heure=heure,send=True,description=desc)
 
          if len(request.FILES)!=0:
              signal.image=request.FILES['image']
@@ -131,6 +131,33 @@ def add_announcement (request):
 
 
  return render(request, 'home_user/add_announcement.html')
+
+
+
+def signal_content(request,id):
+    signal=Signaux.objects.get(pk=id)
+    try:
+        rapport = Rapport.objects.get(signalement_id=id)
+    except Rapport.DoesNotExist:
+        rapport = None
+
+    context= {
+        'signal':signal,
+        'rapport':rapport,
+    }
+    return render(request,'home_user/signal_content.html',context)
+
+def annonce_content(request,id):
+    annonce=Annonce.objects.get(pk=id)
+
+    context= {
+        'annonce':annonce,
+
+    }
+    return render(request,'home_user/annonce_content.html',context)
+
+
+
 
 
 

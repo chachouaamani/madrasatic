@@ -55,95 +55,92 @@ def send_activation_email(user, request):
     EmailThread(email).start()
 
 
-def signup(request):
+def signin_signup(request):
     if request.method == "POST":
         context = {'has_error': False}
+        btn1=request.POST.get("signup")
+        btn2 = request.POST.get("signin")
         Username = request.POST.get("username")
         Name = request.POST.get("name")
         Surname = request.POST.get("surname")
         Email = request.POST.get("email")
         Password1 = request.POST.get("password1")
         Password2 = request.POST.get("password2")
+        Username1 = request.POST.get("username1")
+        Password = request.POST.get("password")
 
-        if Password1 != Password2:
-            messages.add_message(request, messages.ERROR, "vérifier votre mot de passe")
-            context['has_error'] = True
-        if not Username:
-            context['has_error'] = True
-        if not Name:
-            context['has_error'] = True
-        if not Surname:
-            context['has_error'] = True
+        if btn1:
+            if Password1 != Password2:
+                messages.add_message(request, messages.ERROR, "vérifier votre mot de passe")
+                context['has_error'] = True
+            if not Username:
+                context['has_error'] = True
+            if not Name:
+                context['has_error'] = True
+            if not Surname:
+                context['has_error'] = True
 
-        if Users.objects.filter(username=Username).exists():
-            messages.add_message(request, messages.ERROR, "username est déjà utiliser")
-            context['has_error'] = True
+            if Users.objects.filter(username=Username).exists():
+                messages.add_message(request, messages.ERROR, "username est déjà utiliser")
+                context['has_error'] = True
 
-        if Users.objects.filter(email=Email).exists():
-            messages.error(request, "email est déjà utiliser")
-            context['has_error'] = True
+            if Users.objects.filter(email=Email).exists():
+                messages.error(request, "email est déjà utiliser")
+                context['has_error'] = True
 
-        if not context['has_error']:
+            if not context['has_error']:
 
-            user = Users(username=Username, first_name=Name, last_name=Surname, email=Email, password=Password1)
-            user.set_password(user.password)
-            user.is_active = False
-            user.save()
+                user = Users(username=Username, first_name=Name, last_name=Surname, email=Email, password=Password1)
+                user.set_password(user.password)
+                user.is_active = False
+                user.save()
 
-            # send verification email
-            send_activation_email(user, request)
+                # send verification email
+                send_activation_email(user, request)
 
-            messages.add_message(request, messages.SUCCESS, "nous avons vous envoyer un email")
-            return render(request, 'users/signup.html')
-        else:
-            return render(request, 'users/signup.html')
+                messages.add_message(request, messages.SUCCESS, "nous avons vous envoyer un email")
+                return render(request, 'users/login.html')
+            else:
+                return render(request, 'users/login.html')
+        if btn2 :
+            try:
 
-    else:
-        return render(request, 'users/signup.html')
+                user = Users.objects.get(username=Username1)
 
+                checkpassword = check_password(Password, user.password)
+                if checkpassword:
 
-def signin(request):
-    if request.method == "POST":
-        try:
+                    if not user.is_active:
+                        messages.add_message(request, messages.ERROR, "votre compte est désactivé")
+                        return render(request, "users/login.html")
 
-            Username = request.POST.get("username")
-            Password = request.POST.get("password")
-
-            user = Users.objects.get(username=Username)
-
-            checkpassword = check_password(Password, user.password)
-            if checkpassword:
-
-
-
-                if not user.is_active:
-                    messages.add_message(request, messages.ERROR, "votre compte est désactivé")
-                    return render(request, "users/login.html")
-
-                request.session['user_id'] = user.pk
-                request.session['username'] = user.username
-                if 'user_id' in request.session:
-                    user=get_user(request)
-                    messages.add_message(request, messages.SUCCESS, "vous avez sidentifier")
-                    if user.role=="utilisateur":
-                        return redirect(reverse('categorie'))
-                    if user.role=="responsable":
-                        return redirect(reverse('manage'))
-                    service = user.role
-                    if Service.objects.filter(name=service):
-                        return HttpResponse("Hello")
-                    if user.role=="administration" or user.role=="club":
-                        return redirect(reverse('add_announcement'))
+                    request.session['user_id'] = user.pk
+                    request.session['username'] = user.username
+                    if 'user_id' in request.session:
+                        user = get_user(request)
+                        messages.add_message(request, messages.SUCCESS, "vous avez sidentifier")
+                        if user.role == "utilisateur":
+                            return redirect(reverse('categorie'))
+                        if user.role == "responsable":
+                            return redirect(reverse('manage'))
+                        service = user.role
+                        if Service.objects.filter(name=service):
+                            return HttpResponse("Hello")
+                        if user.role == "administration" or user.role == "club":
+                            return redirect(reverse('administration'))
+                if not checkpassword :
+                    messages.add_message(request, messages.ERROR, "password incorrect")
 
 
 
 
-        except Users.DoesNotExist as e:
-            messages.add_message(request, messages.ERROR, "username et password sont invalides")
-            return render(request, "users/login.html")
 
-    return render(request, "users/login.html")
+            except Users.DoesNotExist as e:
+                messages.add_message(request, messages.ERROR, "username invalide")
+                return render(request, "users/login.html")
 
+
+    return render(request, 'users/login.html')
 
 
 
@@ -159,7 +156,7 @@ def activate_user(request, uidb64, token):
         user.save()
 
         messages.success(request, " email verifier sidentifier maintenant")
-        return redirect(reverse('signin'))
+        return redirect(reverse('signin&signup'))
 
     return render(request, "users/activate_failed.html")
 
@@ -235,7 +232,7 @@ class CompleteResetPassword(View):
             user.set_password(user.password)
             user.save()
             messages.add_message(request, messages.SUCCESS, "Mot de passe réinitialisé avec succès!")
-            return redirect('signin')
+            return redirect('signin&signup')
         except Exception as e:
             messages.info(request, "opss,quelque chose s'est mal passé !")
             return render(request, 'users/set-new-password.html', context)

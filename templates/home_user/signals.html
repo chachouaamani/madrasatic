@@ -1,150 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
- {% load static %}
-
+{% load static %}
 <head>
-
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madrasa_Tic</title>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
 
- <title>Madrasa_tic</title>
-     <!-- css stylesheet -->
-     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-   -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- font awesome cdn link  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-     <link rel="stylesheet" href="{% static 'home_user/signals.css' %}">
-    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
-
-
-    <script src="https://kit.fontawesome.com/50d3c7ae30.js" crossorigin="anonymous"></script>
-
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="{% static 'home_user/signals.css' %}">
 
 </head>
 <body>
 
+<!-- header section starts  -->
 
+<header class="header">
 
-<div class="wrapper">
-  <div class="top_navbar">
-    <div class="hamburger">
-       <div class="one"></div>
-       <div class="two"></div>
-       <div class="three"></div>
+    <a href="#" class="logo"><img src="ansai..jpg" width="80px" height="40px">groco </a>
+
+    <nav class="navbar">
+        <a href="">accueil</a>
+        <a href="#features">catégories</a>
+        <a href="#review">annonces</a>
+        <a href="#review">historique</a>
+
+    </nav>
+
+    <div class="icons">
+        <div class="fas fa-bars" id="menu-btn"></div>
+        <div class="fas fa-search" id="search-btn"></div>
+        <div class="fas fa-bell" id="cart-btn"></div>
+        <div class="fas fa-user" id="login-btn"></div>
     </div>
-    <div class="top_menu">
-      <div class="logo"><img src="{% static 'services/img/madrasa logonr.png' %}"  style="width: 56px; height: 56px; margin-top: 0px; margin-left: 30px;"></div>
-      <ul>
-        <li><a href="#">
-          <i class="fas fa-bell"></i>
-          </a></li>
 
-          <div class="dropdown">
-            <li><a href="#">
-                <i class="fas fa-user"></i>
-                </a></li>
-            <div class="dropdown-content">
-            <a href="#">compte</a>
-            <a href="#">deconnexion</a>
+    <form action="" class="search-form">
+        <input type="search" id="search-box" placeholder="search here...">
+        <label for="search-box" class="fas fa-search"></label>
+    </form>
 
+    <div class="shopping-cart">
+
+
+    </div>
+
+    <form action="" class="login-form">
+        <input type="submit" value="logout" class="btn">
+
+        <input type="submit" value="profile" class="btn">
+    </form>
+
+</header>
+
+<!-- header section ends -->
+
+
+
+
+<section class="light">
+    <div class="container py-2">
+        <div class="h1 text-center text-dark" id="pageHeaderTitle">les signalements</div>
+        {%  if sig %}
+        {% for sig in sig  %}
+        <article class="postcard light blue">
+            <a class="postcard__img_link" href="#">
+                {% if sig.image %}
+                <img class="postcard__img" src="{{ sig.image.url }}" alt="Image Title" />
+                {% endif %}
+            </a>
+            <div class="postcard__text t-dark">
+                <h1 class="postcard__title blue"><a href="#">{{ sig.titre }}</a></h1>
+                <div class="postcard__subtitle small">
+                    <time datetime="2020-05-25 12:00:00">
+                        <i class="fas fa-calendar-alt mr-2"></i>{{ sig.date }}
+                    </time>
+                </div>
+                <div class="postcard__bar"></div>
+                <div class="postcard__preview-txt">{{ sig.description }}</div>
+                <ul class="postcard__tagbox">
+                    <li class="tag__item"><i class="fas fa-tag mr-2"></i>{{ sig.statut }}t</li>
+                    <li class="tag__item"><i class="fas fa-clock mr-2"></i>{{ sig.heure }}</li>
+                    <li class="tag__item play blue">
+                        <a href="{% url 'signal_content' id=sig.pk %}"><i class="fas fa-play mr-2"></i>consulter</a>
+                    </li>
+                </ul>
             </div>
-          </div>
-
-          <li><a href="{% url 'categorie'%}">
-            <i class="fa fa-home"></i>
-            </a></li>
-      </ul>
+        </article>
+       {% endfor %}
+    {% endif %}
     </div>
-  </div>
-     <div class="sidebar">
-      <ul>
-
-        <li><a href="{% url 'categorie'%}">
-          <span class="icon"><i class="fas fa-book"></i></span>
-          <span class="title"><b>Acceuil</b></span></a></li>
-
-        <li><a href="{% url 'historique'%}">
-          <span class="icon"><i class="fas fa-volleyball-ball"></i></span>
-            <span class="title"><b>Historique</b></span>
-          </a></li>
-
-    </ul>
-
-  </div>
+</section>
 
 
 
 
+<!-- footer section ends -->
 
-    <div class="main_container ">
-      <div class="content">
-        <h3>Les signalements</h3>
-          <button class="btn" ><a href="{%url 'report_problem'%}">Signaler</a></button>
-      <div class="table">
-          <div class="table-main">
-              <table>
-                  <thead>
-                      <tr >
-                          <th></th>
-                          <th>Photo</th>
-                          <th>Utilisateur</th>
-                          <th>Date</th>
-                          <th>Titre</th>
-                          <th>Status</th>
-                      </tr>
-                </thead>
-                  {%for sig in sig%}
-                      <tbody>
-                          <tr >
-                            <td onclick="hideRow('hidden_row{{sig.pk}}')">
-                                <i class="fa-solid fa-circle-plus"></i>
-                            </td>
-                              <td><img src="{{ sig.image.url}}" alt="pic"></td>
-                              <td>{{ sig.user.username }}</td>
-                              <td>{{sig.date}}</td>
-                              <td>{{sig.titre}}</td>
+<section class="footer">
 
-                              <td> <p class="{{sig.statut}}">{{sig.statut}}</p> </td>
-
-
-                          </tr>
-                          <tr  id="hidden_row1" class="hidden hidden_row{{sig.pk}}">
-                              <th>Lieu</th>
-                              <th>Heure</th>
-                              <th colspan=3>Description</th>
-                              <th></th>
-                          </tr>
-                          <tr class="hidden hidden_row{{sig.pk}}">
-                              <td>{{sig.lieu}}</td>
-                              <td>{{sig.heure}} </td>
-                            <td colspan=3>
-                                <p>{{sig.description}} </p>
-
-                            </td>
-
-                           </tr>
-
-                           {%endfor%}
-
-
-                      </tbody>
-
-              </table>
-
-          </div>
-      </div>
-
-   </div>
-
-      </div>
+    <div class="share">
+        <a href="#" class="fab fa-facebook-f"></a>
+        <a href="#" class="fab fa-twitter"></a>
+        <a href="#" class="fab fa-instagram"></a>
+        <a href="#" class="fab fa-linkedin"></a>
     </div>
 
+    <h1 class="credit"> created by <span> The Matrix </span> | all rights reserved! </h1>
+
+</section>
 
 
 
 
-<script src="{% static 'home_user/index.js' %}"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- custom js file link  -->
+<script src="{% static 'home_user/signal.js' %}"></script>
+
 </body>
 </html>

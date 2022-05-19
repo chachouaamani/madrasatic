@@ -1,86 +1,91 @@
+<!-- header section starts  -->
+
 <!DOCTYPE html>
 <html lang="en">
-{% load static %}
+{% load static%}
 <head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <title>Madrasa_tic</title>
-     <!-- css stylesheet -->
 
-    <link rel="stylesheet" href="{% static 'home_user/style.css' %}">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+  <link rel="stylesheet" href="{% static 'home_user/form.css' %}">
+
+<header class="header">
+
+    <a href="#" class="logo"><img src="ansai..jpg" width="80px" height="40px">groco </a>
+
+    <nav class="navbar">
+        <a href="#home">accueil</a>
+        <a href="#features">catégories</a>
+        <a href="#review">annonces</a>
+        <a href="#review">historique</a>
+    </nav>
+
+    <div class="icons">
+        <div class="fas fa-bars" id="menu-btn"></div>
+        <div class="fas fa-search" id="search-btn"></div>
+        <div class="fas fa-bell" id="cart-btn"></div>
+        <div class="fas fa-user" id="login-btn"></div>
+    </div>
+
+    <form action="" class="search-form">
+        <input type="search" id="search-box" placeholder="search here...">
+        <label for="search-box" class="fas fa-search"></label>
+    </form>
+
+    <div class="shopping-cart">
 
 
+    </div>
 
+    <form action="" class="login-form">
+        <input type="submit" value="logout" class="btn_header">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <input type="submit" value="profile" class="btn_header">
+    </form>
 
+</header>
 </head>
+
+<!-- header section ends -->
 <body>
-<div class="wrapper">
-  <div class="top_navbar">
-    <div class="hamburger">
-       <div class="one"></div>
-       <div class="two"></div>
-       <div class="three"></div>
-    </div>
-    <div class="top_menu">
-      <div class="logo">Madrasa_tic</div>
-      <ul>
-        <li><a href="#">
-          <i class="fas fa-bell"></i>
-          </a></li>
-        <li><a href="#">
-          <i class="fas fa-user"></i>
-          </a></li>
-      </ul>
-    </div>
-  </div>
-     <div class="sidebar">
-      <ul>
-          <li><a href="{% url 'categorie'%}">
-          <span class="icon"><i class="fas fa-house-user"></i></span>
-          <span class="title">Acceuil</span></a></li>
-
-        <li><a href="{% url 'historique'%}">
-          <span class="icon"><i class="fas fa-volleyball-ball"></i></span>
-          <span class="title">Historique</span>
-          </a></li>
-
-    </ul>
-
-  </div>
-     <div class="main_container ">
-        <div class="formulaire">
+   <div class="main-container">
+    <div class="content">
+  <div class="formulaire">
     <div class="title">
       Signaler un problème
     </div>
-    <form method="post" class="form" enctype="multipart/form-data">{% csrf_token %}
+    <div class="form">
+        <form method="post">{% csrf_token %}
+
        <div class="inputfield">
+
           <label>Titre</label>
-          <input type="text" class="input" name="titre" required>
+          <input type="text" name="titre" class="input" required>
        </div>
 
         <div class="inputfield">
           <label>Catégorie</label>
           <div class="custom_select">
-            <select name="selected_categorie">
-                 <option value=""></option>
-                {%for cat in cat%}
-                <option value="{{cat.id}}" required>{{cat.name}}</option>
 
-                 {%endfor%}
+            <select name="selected_categorie">
+                {% if cat %}
+
+                 <option value=""></option>
+                    {% for cat in cat %}
+                    <option value="{{ cat.id }}" required>{{ cat.name }}</option>
+
+                {% endfor %}
+            {% endif %}
             </select>
           </div>
        </div>
          <div class="inputfield">
+
           <label>Lieu</label>
           <div class="custom_select">
-            <select name="lieu">
-                 <option value="cycle supèrieure" required> Cycle supèrieure</option>
-                 <option value="cycle praparatoire" required>Cycle préparatoire</option>
+            <select name="lieu" required>
+                 <option value="Cycle supèrieure"> Cycle supèrieure</option>
+                 <option value="Cycle préparatoire">Cycle préparatoire</option>
 
             </select>
           </div>
@@ -108,55 +113,72 @@
                  <option value="B2">B2</option>
                  <option value="B3">B3</option>
                  <option value="B4">B4</option>
-                 <option value="TP1">tp1</option>
-                 <option value="TP2">tp2</option>
-                 <option value="TP3">tp3</option>
-                 <option value="TP4">tp4</option>
-                 <option value="TP5">tp5</option>
-                 <option value="TP6">tp6</option>
-                 <option value="TP7">tp7</option>
-                 <option value="TP8">tp8</option>
-                 <option value="TP9">tp9</option>
-                 <option value="TP10">tp10</option>
-                 <option value="TP11">tp11</option>
-                 <option value="TP11">tp12</option>
-                 <option value="TP13">tp13</option>
-                 <option value="TP14">tp14</option>
+                 <option value="tp1">tp1</option>
+                 <option value="tp2">tp2</option>
+                 <option value="tp3">tp3</option>
+                 <option value="tp4">tp4</option>
+                 <option value="tp5">tp5</option>
+                 <option value="tp6">tp6</option>
+                 <option value="tp7">tp7</option>
+                 <option value="tp8">tp8</option>
+                 <option value="tp9">tp9</option>
+                 <option value="tp10">tp10</option>
+                 <option value="tp11">tp11</option>
+                 <option value="tp12">tp12</option>
+                 <option value="tp13">tp13</option>
+                 <option value="tp14">tp14</option>
 
             </select>
           </div>
-       </div>
+
+         </div>
+
+
+
         <div class="inputfield">
           <label>Date</label>
           <input type="date" class="input" name="date" required>
        </div>
-      <div class="inputfield">
+        <div class="inputfield">
           <label>Heure</label>
           <input type="time" class="input" name="heure" required>
        </div>
         <div  class="photo">
-           <!-- <a href="#">
-          <span class="icon"><i class="fas fa-plus"></i></span>
-          <span class=""> photo / védio</span>
-          </a> -->
-            <input type="file" name="image"  required>
+
+            <input type="file" name="image" class="" >
         </div>
       <div class="inputfield">
           <label>Description</label>
           <textarea class="textarea" name="description" required></textarea>
        </div>
-
       <div class="inputfield">
-          <button name="valider" value="0" class="btn" > Valider</button>
+          <button type="submit" value="0" class="btn" name="enregistrer">Brouillon</button>
       </div>
-         <div class="inputfield">
-          <button name="enregistrer" value="0" class="btn" > Enregistrer</button>
+      <div class="inputfield">
+          <button type="submit" value="0" class="btn" name="valider">Signaler</button>
       </div>
-    </form>
+        </form>
+    </div>
 </div>
      </div>
+
+ </div>
+
+
 </div>
 
-<script src="{% static 'home_user/index.js' %}"></script>
+<section class="footer">
+
+    <div class="share">
+        <a href="#" class="fab fa-facebook-f"></a>
+        <a href="#" class="fab fa-twitter"></a>
+        <a href="#" class="fab fa-instagram"></a>
+        <a href="#" class="fab fa-linkedin"></a>
+    </div>
+
+    <h1 class="credit"> created by <span> The Matrix </span> | all rights reserved! </h1>
+
+</section>
+  <script src="{% static 'home_user/form.js' %}"></script>
 </body>
 </html>

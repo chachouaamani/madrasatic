@@ -1,112 +1,218 @@
 <!DOCTYPE html>
-
-<html lang="en" dir="ltr" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
 {% load static %}
- <head>
-        {% load static %}
-		<meta charset="utf-8">
-		<title>Madrasa_Tic</title>
-		<!-- css stylesheet -->
-		<link rel="stylesheet" href="{% static 'welcome/style.css' %}">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-		<!-- scripts -->
-		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-		<!-- google fonts -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>complete responsive app landing page website design</title>
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,400;1,700&family=Poppins:ital,wght@0,200;1,400;1,500;1,700&display=swap" rel="stylesheet">
-		<!--<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,800&display=swap" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,800&display=swap" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css?family=Montserrat|Ubuntu" rel="stylesheet">-->
-		<!--  font aesome -->
-		<script src="https://kit.fontawesome.com/959cf16f55.js" crossorigin="anonymous"></script>
-	</head>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+    <!-- font awesome cdn link  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="{% static 'welcome/style.css' %}">
+
+</head>
 <body>
-<div class="title">
-  <header>
-    <nav class="navbar">
-      <div class="logo"><a href="#">LOGO></a></div>
-      <ul class="menu">
-        <li><a href="#rofi">A propos</a></li>
-        <li><a href="#features">Services</a></li>
-          <li><a href="#cta">Contact</a></li>
-      </ul>
-      <div class="buttons">
-          <a  href="{% url 'signin' %}">
-            <input type="button" value="Connexion" >
-          </a>
-          <a  href="{% url 'signup' %}">
-             <input type="button" value="S'inscrire">
-          </a>
-      </div>
-    </nav>
-    <div class=" text-content">
 
-      <h1>Madrasa_Tic</h1>Une plateforme participative pour le signalement
-                          et la prise en charge des problèmes afin D’améliorer le cadre de vie dans l’école.
-       <div class="row">
-        <div class=" col-lg-6">
-						<img class="title-image" src="{% static 'welcome/images/landing_img.png' %}" alt="profil-photo">
-        </div>
-           </div>
+<!-- header section starts  -->
+
+<header>
+
+    <a href="#" class="logo">LOGO</a>
+
+    <div id="menu-bar" class="fas fa-bars"></div>
+
+    <nav class="navbar">
+        <a href="#home">Acceuil</a>
+        <a href="#features">Catégories</a>
+        <a href="#about">A propos</a>
+        <a href="{% url 'signin&signup' %}">Inscription </a>
+        <a href="{% url 'signin&signup' %}">Connexion</a>
+
+    </nav>
+
+</header>
+
+<!-- header section ends -->
+
+<!-- home section starts  -->
+
+<section class="home" id="home">
+
+    <div class="content">
+        <h3>Madrasa_tic</h3>
+        <p>Madrasa_tic une plateforme participative pour le signalement et la prise en charge des problèmes afin D’améliorer le cadre de vie dans l’école. </p>
+        <a href="{% url 'signin&signup' %}" class="btn">Connexion</a>
     </div>
-   <!--<div class="play-button">
-      <span class="play">Play Video</span>
-      <i class="fas fa-play" onclick="click()"></i>
-    </div>-->
-  </header>
+
+    <div class="swiper-container image-slider">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide"><img src="{% static 'welcome/images/img1.jpg' %}" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'welcome/images/img2.jpg' %}" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'welcome/images/img3.jpg' %}" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'welcome/images/img4.jpg' %}" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'welcome/images/img.png' %}" alt=""></div>
+        </div>
+    </div>
+
+</section>
+
+<!-- home section ends -->
+
+<!-- features section starts  -->
+
+<section class="features" id="features">
+
+    <h1 class="heading"> Catégories du Madrasa_tic</h1>
+
+    <div class="box-container">
+
+        <div class="box">
+            <i class="fas fa-magic"></i>
+            <h3>smooth design</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque enim ad neque. Voluptatem alias beatae accusamus laudantium nisi assumenda libero.</p>
+        </div>
+        <div class="box">
+            <i class="fas fa-shield-alt"></i>
+            <h3>privacy protect</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque enim ad neque. Voluptatem alias beatae accusamus laudantium nisi assumenda libero.</p>
+        </div>
+        <div class="box">
+            <i class="fas fa-globe"></i>
+            <h3>multiple language</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque enim ad neque. Voluptatem alias beatae accusamus laudantium nisi assumenda libero.</p>
+        </div>
+        <div class="box">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>location tracking</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque enim ad neque. Voluptatem alias beatae accusamus laudantium nisi assumenda libero.</p>
+        </div>
+        <div class="box">
+            <i class="fas fa-cogs"></i>
+            <h3>powerfull settings</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque enim ad neque. Voluptatem alias beatae accusamus laudantium nisi assumenda libero.</p>
+        </div>
+        <div class="box">
+            <i class="fas fa-headset"></i>
+            <h3>24 x 7 service</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque enim ad neque. Voluptatem alias beatae accusamus laudantium nisi assumenda libero.</p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- features section ends -->
+
+<!-- about section starts  -->
+
+<section class="about" id="about">
+
+    <h1 class="heading">About Madrasa_tic</h1>
+
+<div class="row">
+
+    <div class="image">
+        <img src="{% static 'welcome/images/about-img.png' %}" alt="">
+    </div>
+
+    <div class="content">
+        <h3>Take a Look Around our App</h3>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus labore perspiciatis iusto debitis, explicabo neque earum accusamus adipisci eius, nobis laboriosam, autem modi porro quisquam saepe assumenda fuga quod ipsa!</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit rerum excepturi alias quas voluptatibus provident voluptatum sapiente quos enim praesentium?</p>
+        <div class="buttons">
+            <a href="#"><img src="{% static 'welcome/"images/google-btn.png' %}" alt=""></a>
+            <a href="#"><img src="{% static 'welcome/images/app-store-btn.png' %}" alt=""></a>
+        </div>
+    </div>
 
 </div>
-<!-- Features -->
-		<section id="features">
-			<div class="row">
-				<div class="future-box col-lg-4">
-					<i class="fas fa-check-circle fa-4x just"></i>
-					<h3>Plate-forme utile</h3>
-					<p >L'endroit idéal pour signaler votre problème</p>
-				</div>
-				<div class="future-box col-lg-4">
-					<i class="fas fa-bullseye fa-4x just"></i>
-					<h3>Être à jour.</h3>
-					<p>Jetez un oeil sur les annonces et soyez à jour.</p>
-				</div>
-				<div class="future-box  col-lg-4">
-					<i class="fas fa-heart fa-4x just"></i>
-					<h3>Travail garanti.</h3>
-					<p>Vos problèmes seront réglés le plutôt possible.</p>
-				</div>
-			</div>
-		</section>
+
+</section>
+
+<!-- about section ends -->
 
 
-<!-- Call to Action -->
-		<section id="cta">
-			<h3 class="call-txt">Trouver une solution à vos problèmes.</h3>
 
-            <a  href="{% url 'signup' %}">
-			   <button type="button" class="btn btn-lg btn-dark download-button"> S'inscrire</button>
-            </a>
-            <a  href="{% url 'signin' %}">
-			   <button type="button" class="btn btn-lg btn-outline-light download-button">S'authentifier</button>
-            </a>
-		</section>
-		<!-- Footer -->
-		<footer id="footer">
-            <a href="">
-			 <i class="fab fa-twitter fab-cta"></i>
-            </a>
-            <a href="">
-			<i class="fab fa-facebook-f fab-cta"></i>  </a>
-             <a href="">
-			<i class="fab fa-instagram fab-cta"></i></a>
-            <a href="">
-			<i class="fas fa-envelope fab-cta"></i></a>
-			<p>© Copyright 2022 Madrasa_Tic</p>
-		</footer>
+
+<!-- footer section starts  -->
+
+<section class="footer">
+
+    <div class="share">
+        <a href="#" class="fab fa-facebook-f"></a>
+        <a href="#" class="fab fa-twitter"></a>
+        <a href="#" class="fab fa-instagram"></a>
+        <a href="#" class="fab fa-linkedin"></a>
+    </div>
+
+    <h1 class="credit"> created by <span> The Matrix </span> | all rights reserved! </h1>
+
+</section>
+
+<!-- footer section ends -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- script part  -->
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+<script>
+
+var swiper = new Swiper(".image-slider", {
+    effect: "coverflow",
+    grabCursor: true,
+    centeredSlides: true,
+    slidesPerView: "auto",
+    coverflowEffect: {
+        rotate: 0,
+        stretch: 0,
+        depth: 100,
+        modifier: 2,
+        slideShadows: true,
+    },
+    loop:true,
+    autoplay: {
+          delay: 2000,
+          disableOnInteraction: false,
+    },
+});
+
+let menu = document.querySelector('#menu-bar');
+let navbar = document.querySelector('.navbar');
+
+menu.addEventListener('click', () =>{
+    menu.classList.toggle('fa-times');
+    navbar.classList.toggle('nav-toggle');
+});
+
+window.onscroll = () =>{
+    menu.classList.remove('fa-times');
+    navbar.classList.remove('nav-toggle');
+}
+
+</script>
+
 
 </body>
-<script src="{% static 'welcome/style.js' %}"></script>
 </html>
