@@ -7,6 +7,9 @@ urlpatterns = [
     path('activate-user/<uidb64>/<token>', views.activate_user, name='activate'),
     path('reset-password/', RequestPasswordResetEmail.as_view(), name="reset-password"),
     path('set-new-password/<uidb64>/<token>', CompleteResetPassword.as_view(), name='reset-user-password'),
+    path('profile/', views.profile, name="profile"),
+    path('edit_profile/', views.edit_profile, name="edit_profile"),
+    path('logout/', views.logout, name='logout'),
 
 
 ]

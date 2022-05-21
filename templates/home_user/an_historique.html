@@ -1,0 +1,118 @@
+<!-- header section starts  -->
+
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <title>Madrasa_Tic</title>
+
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <link rel="stylesheet" href="{% static 'home_user/form.css' %}">
+    </head>
+<body>
+
+<header class="header">
+
+    <a href="#" class="logo"><img src="{% static 'welcome/images/logo.png' %}" width="80px" height="80px">Madrasa_Tic </a>
+
+    <nav class="navbar">
+        <a href="{% url 'administration' %}">accueil</a>
+        <a href="{% url 'administration' %}#features">catégories</a>
+        <a href="{% url 'administration' %}#review">annonces</a>
+        <a href="{% url 'historique' %}">historique</a>
+    </nav>
+
+    <div class="icons">
+        <div class="fas fa-bars" id="menu-btn"></div>
+        <div class="fas fa-search" id="search-btn"></div>
+        <div class="fas fa-bell" id="cart-btn"></div>
+        <div class="fas fa-user" id="login-btn"></div>
+    </div>
+
+    <form action="" class="search-form">
+        <input type="search" id="search-box" placeholder="search here...">
+        <label for="search-box" class="fas fa-search"></label>
+    </form>
+
+    <div class="shopping-cart">
+
+
+    </div>
+
+    <div  class="login-form">
+        <a href="{% url 'logout' %}"><button value="logout" class="btn_header">logout</button></a>
+
+        <a href="{% url 'profile' %}"><button value="logout" class="btn_header">profile</button></a>
+    </div>
+</header>
+
+
+<!-- header section ends -->
+
+   <div class="main-container">
+
+  <div class="formulaire">
+
+       <form  method="post" class="form" enctype="multipart/form-data">{% csrf_token %}
+           {% if annonce %}
+
+
+         <div class="title">
+          Modifier Annonce
+         </div>
+          <div class="inputfield">
+             <label>Titre</label>
+             <input type="text" name="titre" class="input" required value="{{ annonce.titre }}">
+          </div>
+
+          <div  class="photo">
+           {% if annonce.image %}
+            <img src="{{ annonce.image.url }} " height="50px" width="50px">
+            {% endif %}
+             <input type="file"  name="image" class="" >
+          </div>
+          <div class="inputfield">
+             <label>Description</label>
+             <textarea class="textarea" name="description" required>{{ annonce.description }}</textarea >
+          </div>
+            <div class="inputfield">
+          <label>Date_début_affichage: {{ annonce.date_debut }}</label>
+          <input type="date" class="input" name="date_debut" >
+       </div>
+            <div class="inputfield">
+          <label>Date_fin_affichage: {{ annonce.date_fin }}</label>
+          <input type="date" class="input" name="date_fin" >
+       </div>
+        <div class="inputfield">
+          <button type="submit" value="0" class="btn" name="delete">Supprimer</button>
+      </div>
+      <div class="inputfield">
+          <button type="submit" value="0" class="btn" name="save">Enregistrer</button>
+      </div>
+                 <div class="inputfield">
+          <button type="submit" value="0" class="btn" name="valider">Envoyer</button>
+      </div>
+
+
+{% endif %}
+
+        </form>
+ </div>
+   <section class="footer">
+
+    <div class="share">
+        <a href="#" class="fab fa-facebook-f"></a>
+        <a href="#" class="fab fa-twitter"></a>
+        <a href="#" class="fab fa-instagram"></a>
+        <a href="#" class="fab fa-linkedin"></a>
+    </div>
+
+    <h1 class="credit"> created by <span> The Matrix </span> | all rights reserved! </h1>
+
+</section>
+   </div>
+
+  <script src="{% static 'home_user/form.js' %}"></script>
+</body>
+</html>

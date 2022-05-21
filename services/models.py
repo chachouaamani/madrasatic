@@ -23,11 +23,18 @@ class Rapport(models.Model):
     status = models.CharField(null=False, default="Non_traité", max_length=20)
     image = models.ImageField(null=False, blank=True, upload_to=filepath)
     complement = models.CharField(null=False, default="anything", max_length=200)
+    send = models.BooleanField(default=False)
+
 
 
     @property
     def valider(self):
         if self.validate==True:
+            return True
+
+    @property
+    def sent(self):
+        if self.send == True:
             return True
 
     def __str__(self):

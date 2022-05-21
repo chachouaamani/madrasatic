@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
+    <title>Madrasa_Tic</title>
 
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{% static 'home_user/form.css' %}">
 
 <header class="header">
 
@@ -48,7 +50,8 @@
 
   <div class="formulaire">
 
-       <form  method="post" class="form" enctype="multipart/form-data">
+
+       <form  method="post" class="form" enctype="multipart/form-data">{% csrf_token %}
 
 
          <div class="title">
@@ -69,9 +72,19 @@
 
         <div class="inputfield">
 
-        <button type="submit"  class="btn" >Ajouter</button>
+        <button type="submit"  class="btn" value="0" name="save" >Ajouter</button>
+
 
         </div>
+
+
+        <div class="inputfield">
+
+        <button type="submit"  class="btn" value="0" name="cancel" >Annuler</button>
+
+
+        </div>
+
 
 
 
@@ -91,6 +104,6 @@
 
 </section>
 
-  <script src="index.js"></script>
+  <script src="{% static 'home_user/form.js' %}"></script>
 </body>
 </html>

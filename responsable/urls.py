@@ -14,5 +14,6 @@ path('annonce/', views.annonce, name="annonce"),
 path('category_service/', views.category_table, name="category_service"),
 path('add_service/', views.add_service, name="add_service"),
 path('add_category/', views.add_category, name="add_category"),
+path('statistique/', views.test, name="statistic"),
 
 ]

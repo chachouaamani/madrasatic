@@ -4,20 +4,34 @@
 <html lang="en">
 {% load static%}
 <head>
-
+<title>Madrasa_Tic</title>
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
   <link rel="stylesheet" href="{% static 'home_user/form.css' %}">
-
+    </head>
+<body>
 <header class="header">
 
-    <a href="#" class="logo"><img src="ansai..jpg" width="80px" height="40px">groco </a>
+    <a href="#" class="logo"><img src="{% static 'welcome/images/logo.png' %}" width="80px" height="40px">Madrasa_Tic </a>
 
     <nav class="navbar">
-        <a href="#home">accueil</a>
-        <a href="#features">catégories</a>
-        <a href="#review">annonces</a>
-        <a href="#review">historique</a>
+        {% if user.is_admin %}
+        <a href="{% url 'administration' %}">accueil</a>
+        <a href="{% url 'administration' %}#features">catégories</a>
+        <a href="{% url 'administration' %}#review">annonces</a>
+        <a href="{% url 'historique' %}">historique</a>
+        {% else %}
+        <a href="{% url 'categorie' %}">accueil</a>
+        <a href="{% url 'categorie' %}#features">catégories</a>
+        <a href="{% url 'categorie' %}#review">annonces</a>
+        <a href="{% url 'historique' %}">historique</a>
+        {% endif %}
+    {% if user.is_responsable %}
+         <a href="{% url 'manage' %}">Dashboard</a>
+        {% endif %}
+    {% if user.is_service %}
+         <a href="{% url 'services' %}">Dashboard</a>
+    {% endif %}
     </nav>
 
     <div class="icons">
@@ -37,25 +51,26 @@
 
     </div>
 
-    <form action="" class="login-form">
-        <input type="submit" value="logout" class="btn_header">
+    <div  class="login-form">
+        <a href="{% url 'logout' %}"><button value="logout" class="btn_header">logout</button></a>
 
-        <input type="submit" value="profile" class="btn_header">
-    </form>
+        <a href="{% url 'profile' %}"><button value="logout" class="btn_header">profile</button></a>
+    </div>
 
 </header>
-</head>
+
 
 <!-- header section ends -->
-<body>
+
    <div class="main-container">
+
     <div class="content">
   <div class="formulaire">
     <div class="title">
       Signaler un problème
     </div>
     <div class="form">
-        <form method="post">{% csrf_token %}
+        <form method="post" enctype="multipart/form-data">{% csrf_token %}
 
        <div class="inputfield">
 

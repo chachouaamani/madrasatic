@@ -21,44 +21,6 @@
 
 <!-- header section starts  -->
 
-<header class="header">
-
-    <a href="#" class="logo"><img src="ansai..jpg" width="80px" height="40px">groco </a>
-
-    <nav class="navbar">
-        <a href="#home">accueil</a>
-        <a href="#features">catégories</a>
-        <a href="#review">annonces</a>
-        <a href="#review">historique</a>
-
-    </nav>
-
-    <div class="icons">
-        <div class="fas fa-bars" id="menu-btn"></div>
-        <div class="fas fa-search" id="search-btn"></div>
-        <div class="fas fa-bell" id="cart-btn"></div>
-        <div class="fas fa-user" id="login-btn"></div>
-    </div>
-
-    <form action="" class="search-form">
-        <input type="search" id="search-box" placeholder="search here...">
-        <label for="search-box" class="fas fa-search"></label>
-    </form>
-
-    <div class="shopping-cart">
-
-
-    </div>
-
-    <form action="" class="login-form">
-        <input type="submit" value="logout" class="btn">
-
-        <input type="submit" value="profile" class="btn">
-    </form>
-
-</header>
-
-<!-- header section ends -->
 
 <div class="container">
     <div class="main-body">
@@ -229,7 +191,33 @@
 </section>
 
 
+<script>
+    let edit = document.querySelector('.edit');
+     let save = document.querySelector('.save');
+     let put = document.querySelector('.put');
 
+
+document.querySelector('#hidden').onclick = () =>{
+    edit.classList.remove('visible');
+    edit.classList.add('invisible');
+    save.classList.remove('invisible');
+    save.classList.add('visible');
+    put.classList.remove('invisible');
+    put.classList.add('visible');
+
+}
+
+document.querySelector('#unhidden').onclick = () =>{
+    save.classList.remove('visible');
+    save.classList.add('invisible');
+    put.classList.remove('visible');
+    put.classList.add('invisible');
+    edit.classList.remove('invisible');
+    edit.classList.add('visible');
+
+}
+
+</script>
 
 
 

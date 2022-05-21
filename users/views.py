@@ -1,11 +1,12 @@
 import threading
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password, check_password
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
-from .models import Users,Service
+from .models import Users, Service
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -14,17 +15,13 @@ from django.core.mail import EmailMessage
 from .utils import generate_token
 from django.conf import settings
 
-
-
-
-
+from django.contrib.auth import logout as auth_logout
 
 
 # Create your views here.
 
 def get_user(request):
     return Users.objects.get(id=request.session['user_id'])
-
 
 
 # for user to not wait
@@ -58,7 +55,7 @@ def send_activation_email(user, request):
 def signin_signup(request):
     if request.method == "POST":
         context = {'has_error': False}
-        btn1=request.POST.get("signup")
+        btn1 = request.POST.get("signup")
         btn2 = request.POST.get("signin")
         Username = request.POST.get("username")
         Name = request.POST.get("name")
@@ -102,7 +99,7 @@ def signin_signup(request):
                 return render(request, 'users/login.html')
             else:
                 return render(request, 'users/login.html')
-        if btn2 :
+        if btn2:
             try:
 
                 user = Users.objects.get(username=Username1)
@@ -118,17 +115,18 @@ def signin_signup(request):
                     request.session['username'] = user.username
                     if 'user_id' in request.session:
                         user = get_user(request)
-                        messages.add_message(request, messages.SUCCESS, "vous avez sidentifier")
-                        if user.role == "utilisateur":
+
+                        if user.role.name== "utilisateur":
                             return redirect(reverse('categorie'))
-                        if user.role == "responsable":
+
+                        if user.role.name == "responsable":
                             return redirect(reverse('manage'))
-                        service = user.role
-                        if Service.objects.filter(name=service):
-                            return HttpResponse("Hello")
-                        if user.role == "administration" or user.role == "club":
+
+                        if user.role.service is not None:
+                            return redirect('services')
+                        if user.role.name == "administration" or user.role.name == "club":
                             return redirect(reverse('administration'))
-                if not checkpassword :
+                if not checkpassword:
                     messages.add_message(request, messages.ERROR, "password incorrect")
 
 
@@ -139,9 +137,7 @@ def signin_signup(request):
                 messages.add_message(request, messages.ERROR, "username invalide")
                 return render(request, "users/login.html")
 
-
     return render(request, 'users/login.html')
-
 
 
 def activate_user(request, uidb64, token):
@@ -197,7 +193,7 @@ class RequestPasswordResetEmail(View):
             EmailThread(email).start()
             messages.success(request, "nous avons vous envoyer un email")
         else:
-            messages.error(request,"Entrer un valide email")
+            messages.error(request, "Entrer un valide email")
         return render(request, 'users/reset_password.html')
 
 
@@ -208,7 +204,6 @@ class CompleteResetPassword(View):
             'uidb64': uidb64,
             'token': token
         }
-
 
         return render(request, 'users/set-new-password.html', context)
 
@@ -237,3 +232,63 @@ class CompleteResetPassword(View):
             messages.info(request, "opss,quelque chose s'est mal passé !")
             return render(request, 'users/set-new-password.html', context)
 
+@login_required
+def profile(request):
+    if 'user_id' in request.session:
+        user = get_user(request).pk
+        data = Users.objects.get(pk=user)
+        context = {
+            'data': data
+        }
+
+    return render(request, 'users/profile.html', context)
+
+@login_required
+def edit_profile(request):
+    if 'user_id' in request.session:
+        user = get_user(request).pk
+        data = Users.objects.get(pk=user)
+        context = {
+            'data': data
+        }
+
+        if request.method == "POST":
+
+            Username = request.POST.get("username")
+            Name = request.POST.get("name")
+            Surname = request.POST.get("surname")
+            Email = request.POST.get("email")
+            Password1 = request.POST.get("password1")
+            Password2 = request.POST.get("password2")
+            if not Users.objects.filter(username=Username).exists():
+                data.username = Username
+
+            data.first_name = Name
+            data.last_name = Surname
+
+            if len(request.FILES) != 0:
+                data.image = request.FILES['image']
+            if len(Password1) >= 8 and Password2 == Password1:
+                data.password = Password1
+                data.set_password(data.password)
+            data.save()
+            if not Users.objects.filter(email=Email).exists():
+                data.email = Email
+                data.is_active = False
+                data.save()
+                send_activation_email(data, request)
+                messages.add_message(request, messages.SUCCESS, "nous avons vous envoyer un email")
+                return redirect('signin&signup')
+
+    return render(request, 'users/edit_profile.html', context)
+
+
+def logout(request):
+    try:
+
+        del request.session['user_id']
+        messages.add_message(request,messages.INFO,"vous avez déconnecté")
+
+    except KeyError:
+        pass
+    return redirect('signin&signup')

@@ -1,10 +1,11 @@
 from django.contrib import admin
 
 # Register your models here.
-from users.models import Users, Service
+from users.models import Users, Service,Role
 from django.contrib.auth.admin import UserAdmin
 
 admin.site.register(Service)
+admin.site.register(Role)
 
 
 class CustomUserAdmin(UserAdmin):
@@ -14,7 +15,7 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('username', 'role')
     actions = ('desactivate_account', 'activate_account')
     fieldsets = (
-        (None, {'fields': ('username','password','email', 'first_name', 'last_name','role')}),
+        (None, {'fields': ('username','password','email', 'first_name', 'last_name','role','image')}),
         ('Permissions', {'fields': ('is_active',)}),
         ('Personal',{'fields':('is_staff','is_superuser','date_joined','last_login')}),
     )

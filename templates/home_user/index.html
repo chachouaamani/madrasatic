@@ -23,13 +23,19 @@
 
 <header class="header">
 
-    <a href="#" class="logo"><img src="ansai..jpg" width="80px" height="40px">groco </a>
+    <a href="#" class="logo"><img src="{% static 'welcome/images/logo.png' %}" width="80px" height="40px">Madrasa_Tic </a>
 
     <nav class="navbar">
         <a href="#home">accueil</a>
         <a href="#features">catégories</a>
         <a href="#review">annonces</a>
          <a href="{% url 'historique' %}">historique</a>
+        {% if user.is_responsable %}
+         <a href="{% url 'manage' %}">Dashboard</a>
+        {% endif %}
+    {% if user.is_service %}
+         <a href="{% url 'services' %}">Dashboard</a>
+    {% endif %}
     </nav>
 
     <div class="icons">
@@ -46,14 +52,15 @@
 
     <div class="shopping-cart">
 
-
     </div>
 
-    <form action="" class="login-form">
-        <input type="submit" value="logout" class="btn">
+    <div  class="login-form">
+        <a href="{% url 'logout' %}" ><button value="logout" class="btn_header">logout</button></a>
 
-        <input type="submit" value="profile" class="btn">
-    </form>
+        <a href="{% url 'profile' %}"><button value="logout" class="btn_header">profile</button></a>
+    </div>
+
+
 
 </header>
 
@@ -83,7 +90,7 @@
         <div class="swiper-wrapper">
         {% if afficher_annonce %}
  {% for annonce in  afficher_annonce %}
-     {%if annonce.equal   %}
+     {%if annonce.equal %}
             <div class="swiper-slide box">
                 {% if annonce.image %}
                 <img src="{{ annonce.image.url }}" alt="">

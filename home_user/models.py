@@ -2,7 +2,7 @@ import datetime
 from datetime import date
 
 from django.db import models
-from users.models import Users,Service
+from users.models import Users, Service
 
 import os
 
@@ -37,13 +37,16 @@ class Signaux(models.Model):
     validate = models.BooleanField(default=False)
     statut = models.CharField(max_length=50, default="Non_traité")
     complement = models.CharField(null=True, default="anything", max_length=200)
-    service=models.ForeignKey(Service,on_delete=models.CASCADE, default=1)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, default=1)
     image = models.ImageField(null=False, blank=True, upload_to=filepath)
+
+    @property
+    def sent(self):
+        if self.send:
+            return True
 
     def __str__(self):
         return self.titre
-
-
 
 
 class Annonce(models.Model):
@@ -54,13 +57,17 @@ class Annonce(models.Model):
     date_debut = models.DateField(null=False)
     date_fin = models.DateField(null=False)
     validate = models.BooleanField(default=False)
-    status = models.CharField(max_length=255, null=False, default="Non_valider")
-
-
+    send = models.BooleanField(default=False)
+    status = models.CharField(max_length=255, null=False, default="Non_traité")
 
     @property
     def equal(self):
         if self.date_debut <= date.today() <= self.date_fin:
+            return True
+
+    @property
+    def sent(self):
+        if self.send == True:
             return True
 
     def __str__(self):

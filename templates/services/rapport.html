@@ -1,0 +1,87 @@
+<!-- header section starts  -->
+
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <title>Madrasa_Tic</title>
+
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <link rel="stylesheet" href="{% static 'home_user/form.css' %}">
+
+
+</head>
+
+<!-- header section ends -->
+<body>
+   <div class="main-container">
+
+  <div class="formulaire">
+
+       <form  method="post" class="form" enctype="multipart/form-data">{% csrf_token %}
+               {% if rapport %}
+
+
+         <div class="title">
+          Modifier Rapport
+
+         </div>
+          <div class="inputfield">
+             <label>Titre</label>
+             <input type="text" name="titre" class="input" required value="{{ rapport.title }}">
+          </div>
+
+          <div  class="photo">
+             <input type="file"  name="image" class="" >
+          </div>
+          <div class="inputfield">
+             <label>Description</label>
+             <textarea class="textarea" name="description" required>{{ rapport.description }}</textarea >
+          </div>
+            <div class="inputfield">
+          <label>Date de rapport: {{ rapport.date }} </label>
+          <input type="date" class="input" name="date" >
+       </div>
+
+        <div class="inputfield">
+
+        <button type="submit"  class="btn" name="delete" value="0" >Supprimer</button>
+
+        </div>
+            <div class="inputfield">
+
+        <button type="submit"  class="btn" name="save" value="0" >Sauvgarder</button>
+
+        </div>
+                        <div class="inputfield">
+
+        <button type="submit"  class="btn" name="valider" value="0" >valider</button>
+
+        </div>
+
+
+
+
+
+
+{% endif %}
+        </form>
+ </div>
+   <section class="footer">
+
+    <div class="share">
+        <a href="#" class="fab fa-facebook-f"></a>
+        <a href="#" class="fab fa-twitter"></a>
+        <a href="#" class="fab fa-instagram"></a>
+        <a href="#" class="fab fa-linkedin"></a>
+    </div>
+
+    <h1 class="credit"> created by <span> The Matrix </span> | all rights reserved! </h1>
+
+</section>
+   </div>
+
+  <script src="{% static 'home_user/form.js' %}"></script>
+</body>
+</html>
