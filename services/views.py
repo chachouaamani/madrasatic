@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+
+from home_user.filters import OrderFilter
 from users.models import Users
 from home_user.models import Signaux
 from .models import Rapport
@@ -17,6 +19,10 @@ def rapport(request):
         user = get_user(request).pk
         service=Users.objects.get(pk=user)
         rap = Rapport.objects.filter(user_id=user)
+        if request.method=='POST':
+            search=request.POST.get('search')
+            rap = Rapport.objects.filter(user_id=user).filter(title__contains=search) | Rapport.objects.filter(user_id=user).filter(description__contains=search)
+
         context = {
             'rapport': rap,
             'user':service
@@ -28,10 +34,18 @@ def service(request):
     if 'user_id' in request.session:
         user = get_user(request).role.service.name
         sig = Signaux.objects.filter(validate=True).filter(service__name=user)
+        order_count = sig.count()
 
+        myFilter = OrderFilter(request.GET, queryset=sig)
+        sig = myFilter.qs
+        if request.method == 'POST':
+            search = request.POST.get('search')
+            sig = Signaux.objects.filter(validate=True).filter(service__name=user).filter(titre__contains=search)|Signaux.objects.filter(validate=True).filter(service__name=user).filter(description__contains=search)|Signaux.objects.filter(validate=True).filter(service__name=user).filter(user__username__contains=search)|Signaux.objects.filter(validate=True).filter(service__name=user).filter(lieu__contains=search)|Signaux.objects.filter(validate=True).filter(service__name=user).filter(salle__contains=search)
         context = {
             'sig': sig,
-            'user':user
+            'user':user,
+            'myFilter': myFilter,
+            'order_count': order_count
         }
         return render(request, 'services/service.html', context)
 
@@ -125,8 +139,20 @@ def signal_content(request, id):
         'rapport': rapport,
     }
     if request.method == 'POST':
-        signal.statut = 'Traité'
-        signal.save()
+        valider = request.POST.get('valider')
+        rejeter = request.POST.get('rejeter')
+        if valider:
+            signal.statut = 'Traité'
+            signal.save()
+            messages.add_message(request, messages.SUCCESS, 'signalement traité')
+            return redirect('services')
+        if rejeter:
+            signal.validate=False
+            signal.save()
+            messages.add_message(request, messages.WARNING, 'signalement rejeté')
+            return redirect('services')
+
+
     return render(request, 'services/signal.html', context)
 
 @login_required

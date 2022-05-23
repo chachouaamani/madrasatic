@@ -25,6 +25,12 @@ class Catégorie(models.Model):
 
 
 class Signaux(models.Model):
+    STATUS=(
+        ('Traité','Traité'),
+        ('En_cours' ,'En_cours'),
+        ('Non_traité', 'Non_traité'),
+        ('Rejeté', 'Rejeté')
+    )
     user = models.ForeignKey(Users, on_delete=models.CASCADE, default=1)
     titre = models.CharField(max_length=50, default="none", null=False)
     category = models.ForeignKey(Catégorie, on_delete=models.CASCADE, default=1)
@@ -35,7 +41,7 @@ class Signaux(models.Model):
     description = models.TextField(max_length=200, default="None", null=False)
     send = models.BooleanField(default=False)
     validate = models.BooleanField(default=False)
-    statut = models.CharField(max_length=50, default="Non_traité")
+    statut = models.CharField(max_length=50, default="Non_traité",choices=STATUS)
     complement = models.CharField(null=True, default="anything", max_length=200)
     service = models.ForeignKey(Service, on_delete=models.CASCADE, default=1)
     image = models.ImageField(null=False, blank=True, upload_to=filepath)

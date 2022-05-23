@@ -55,9 +55,10 @@
         <div class="fas fa-user" id="login-btn"></div>
     </div>
 
-    <form action="" class="search-form">
-        <input type="search" id="search-box" placeholder="search here...">
-        <label for="search-box" class="fas fa-search"></label>
+    <form class="search-form" method="post">{% csrf_token %}
+        <input type="search" id="search-box" placeholder="Rechercher ici..." name="search">
+        <button type="submit"><label for="search-box" class="fas fa-search"></label></button>
+
     </form>
 
     <div class="shopping-cart">
@@ -78,7 +79,14 @@
 
 
 
-<section class="light">
+<section class="light" >
+<div class="filter" style="color: #0a0b0d" >
+    <form method="get">
+        {{ myFilter.form }}
+       <a> <button class="btn_filter" type="submit">Filtrer</button></a>
+    </form>
+</div>
+
     <div class="container py-2">
         <div class="h1 text-center text-dark" id="pageHeaderTitle">les signalements</div>
         {%  if sig %}

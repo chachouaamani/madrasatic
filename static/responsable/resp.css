@@ -497,7 +497,7 @@ body {
 	background: var(--orange);
 }
 
-#content main .table-data .order table tr td .status.Rejeter {
+#content main .table-data .order table tr td .status.Rejeté {
 	background: var(--red);
 }
 

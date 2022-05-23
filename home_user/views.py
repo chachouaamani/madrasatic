@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from users.models import Users
+from .filters import OrderFilter
 from .models import Signaux
 from .models import Catégorie
 from services.models import Rapport
@@ -47,6 +48,10 @@ def report_problem(request):
             if len(request.FILES) != 0:
                 signal.image = request.FILES['image']
             signal.save()
+            messages.add_message(request,messages.SUCCESS,"votre signalement  est ajouter")
+            return redirect('historique')
+
+
         if (enregistrer):
             if 'user_id' in request.session:
                 user = get_user(request).pk
@@ -57,7 +62,9 @@ def report_problem(request):
             if len(request.FILES) != 0:
                 signal.image = request.FILES['image']
             signal.save()
-            return redirect('categorie')
+            messages.add_message(request, messages.SUCCESS, "votre signalement est enregistrer")
+            return redirect('historique')
+
 
     context={
             'cat': Catégorie.objects.all(),
@@ -87,10 +94,20 @@ def signals(request, id):
     if 'user_id' in request.session:
         user_id = get_user(request).pk
         user = Users.objects.get(pk=user_id)
+        order_count=sig.count()
+
+        myFilter = OrderFilter(request.GET,queryset=sig)
+        sig=myFilter.qs
+    if request.method=='POST':
+        search=request.POST.get('search')
+        sig=Signaux.objects.filter(category__name=catname).filter(validate=True).filter(titre__contains=search)|Signaux.objects.filter(category__name=catname).filter(validate=True).filter(description__contains=search)|Signaux.objects.filter(category__name=catname).filter(validate=True).filter(user__username__contains=search)|Signaux.objects.filter(category__name=catname).filter(validate=True).filter(lieu__contains=search)|Signaux.objects.filter(category__name=catname).filter(validate=True).filter(salle__contains=search)
 
     context = {
         'sig': sig,
-        'user':user
+        'user':user,
+        'myFilter':myFilter,
+        'order_count':order_count,
+
 
     }
 
@@ -104,6 +121,12 @@ def historique(request):
 
     try:
       sig = Signaux.objects.filter(user_id=user_id)
+
+
+      order_count = sig.count()
+
+      myFilter = OrderFilter(request.GET, queryset=sig)
+      sig = myFilter.qs
     except Signaux.DoesNotExist:
 
       sig=None
@@ -112,11 +135,19 @@ def historique(request):
     except Annonce.DoesNotExist:
         annonce=None
 
-
+    if request.method == 'POST':
+        search = request.POST.get('search')
+        sig = Signaux.objects.filter(user_id=user_id).filter(titre__contains=search) | Signaux.objects.filter(
+            user_id=user_id).filter(description__contains=search) | Signaux.objects.filter(user_id=user_id).filter(
+            salle__contains=search) | Signaux.objects.filter(user_id=user_id).filter(
+            lieu__contains=search) | Signaux.objects.filter(user_id=user_id).filter(category__name__contains=search)
+        annonce = Annonce.objects.filter(user_id=user_id).filter(titre__contains=search)| Annonce.objects.filter(user_id=user_id).filter(description__contains=search)
     context = {
         'annonce': annonce,
         'sig': sig,
-        'user': user
+        'user': user,
+        'myFilter': myFilter,
+        'order_count': order_count
     }
 
     return render(request, "home_user/historique.html", context)
@@ -155,11 +186,10 @@ def add_announcement(request):
 
             if len(request.FILES) != 0:
                 annonce.image = request.FILES['image']
-            messages.success(request, "votre annonce est ajouté")
-
             annonce.save()
+            messages.add_message(request,messages.SUCCESS, "votre annonce est ajouté")
 
-            return render(request, 'home_user/add_announcement.html')
+            return redirect('historique')
 
         if save:
             if 'user_id' in request.session:
@@ -170,11 +200,10 @@ def add_announcement(request):
 
             if len(request.FILES) != 0:
                 annonce.image = request.FILES['image']
-            messages.success(request, "votre annonce est enregistrer")
-
             annonce.save()
+            messages.add_message(request, messages.SUCCESS, "votre annonce est enregistré")
 
-            return render(request, 'home_user/add_announcement.html')
+            return redirect('historique')
 
 
 
@@ -238,6 +267,7 @@ def signal_historique(request, id):
         signaler = request.POST.get("signaler")
         if delete:
             signal.delete()
+            messages.add_message(request,messages.ERROR,'signalement supprimé')
             return redirect('historique')
         if signaler:
             signal.category_id=cat_id
@@ -255,6 +285,7 @@ def signal_historique(request, id):
             if len(request.FILES) != 0:
                 signal.image = request.FILES['image']
             signal.save()
+            messages.add_message(request, messages.SUCCESS, 'votre signalement est ajouté')
             return redirect('historique')
 
         if save:
@@ -272,6 +303,7 @@ def signal_historique(request, id):
             if len(request.FILES) != 0:
                 signal.image = request.FILES['image']
             signal.save()
+            messages.add_message(request, messages.SUCCESS, 'votre signalement est sauvgardé')
             return redirect('historique')
 
     return render(request, 'home_user/sig_historique.html', context)
@@ -297,6 +329,7 @@ def annonce_historique(request, id):
         valider= request.POST.get("valider")
         if delete:
             annonce.delete()
+            messages.add_message(request, messages.ERROR, 'annonce est supprimé')
             return redirect('historique')
         if valider:
 
@@ -309,6 +342,7 @@ def annonce_historique(request, id):
                 annonce.date_debut = date_debut
 
             annonce.save()
+            messages.add_message(request, messages.SUCCESS, 'votre annonce est ajouté')
             return redirect('historique')
 
         if save:
@@ -321,6 +355,7 @@ def annonce_historique(request, id):
                 annonce.date_debut = date_debut
 
             annonce.save()
+            messages.add_message(request, messages.SUCCESS, 'votre signalement est sauvgardé')
             return redirect('historique')
     return render(request, 'home_user/an_historique.html', context)
 

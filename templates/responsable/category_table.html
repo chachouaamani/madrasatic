@@ -49,6 +49,12 @@
 					<span class="text">Tables</span>
 				</a>
 			</li>
+            <li>
+				<a href="{% url 'statistic' %}">
+					<i class='bx bx-home'></i>
+					<span class="text">Statistique</span>
+				</a>
+			</li>
 			<li>
 				<a href="{% url 'categorie' %}">
 					<i class='bx bx-home'></i>
@@ -65,12 +71,7 @@
 					<span class="text">Logout</span>
 				</a>
 			</li>
-             <li>
-				<a href="{% url 'statistic' %}">
-					<i class='bx bx-home'></i>
-					<span class="text">Statistique</span>
-				</a>
-			</li>
+
 		</ul>
 	</section>
 	<!-- SIDEBAR -->
@@ -83,9 +84,9 @@
 		<nav>
 			<i class='bx bx-menu' ></i>
 
-			<form action="#">
+			<form method="post" >{% csrf_token %}
 				<div class="form-input">
-					<input type="search" placeholder="Search...">
+					<input type="search" placeholder="Rechercher ici..." name="search">
 					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
 				</div>
 			</form>

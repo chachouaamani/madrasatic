@@ -7,6 +7,7 @@
 
 	<!-- Boxicons -->
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 	<!-- My CSS -->
 	<link rel="stylesheet" href="{% static 'service/service.css' %}">
 	<script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
@@ -73,9 +74,9 @@
 		<nav>
 			<i class='bx bx-menu' ></i>
 			<a href="#" class="nav-link">Signalement</a>
-			<form action="#">
+			<form method="post" >{% csrf_token %}
 				<div class="form-input">
-					<input type="search" placeholder="Search...">
+					<input type="search" placeholder="Rechercher ici..." name="search">
 					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
 				</div>
 			</form>
@@ -109,10 +110,21 @@
 
 			</div>
 
+{% if messages %}
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}" role="alert">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
 
 
 			<div class="table-data">
 				<div class="order">
+                  <div class="filter" style="color: #0a0b0d" >
+    <form method="get">
+        {{ myFilter.form }}
+       <a> <button class="btn_filter" type="submit">Filtrer</button></a>
+    </form>
+</div>
 					<div class="head">
 						<h3>Singalement recues</h3>
 						<i class='bx bx-search' ></i>
