@@ -5,8 +5,9 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
+
 from home_user.filters import OrderFilter
-from home_user.models import Signaux, Catégorie, Annonce
+from home_user.models import Signaux, Catégorie, Annonce,Notifications
 from users.models import Users, Service
 from services.models import Rapport
 from django.contrib.auth.decorators import login_required
@@ -23,9 +24,11 @@ def category_table(request):
         category = Catégorie.objects.filter(name__contains=search) |  Catégorie.objects.filter(description__contains=search)
         service = Service.objects.filter(name__contains=search) | Service.objects.filter(description__contains=search)
 
+    notification = Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).order_by( '-pk')
     context = {
         'category': category,
         'service': service,
+        'notification':notification,
     }
     return render(request, 'responsable/category_table.html', context)
 
@@ -141,8 +144,10 @@ def annonce(request):
     if request.method == 'POST':
         search = request.POST.get('search')
         annonce = Annonce.objects.filter(titre__contains=search)| Annonce.objects.filter(description__contains=search)| Annonce.objects.filter(user__username__contains=search)
+    notification = Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).order_by('-pk')
     context = {
-        'annonce': annonce
+        'annonce': annonce,
+        'notification':notification,
 
     }
 
@@ -154,27 +159,53 @@ def rapport(request):
     if request.method == 'POST':
         search = request.POST.get('search')
         rapport = Rapport.objects.filter(title__contains=search)| Rapport.objects.filter(description__contains=search)| Rapport.objects.filter(user__username__contains=search)
+    notification = Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).order_by('-pk')
     context = {
-        'rapport': rapport
+        'rapport': rapport,
+        'notification':notification,
     }
     return render(request, 'responsable/rapport.html', context)
 
 @login_required
 def manage(request):
     declarations = Signaux.objects.filter(send=True).order_by('-pk')
+    notification=Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).order_by('-pk')
+    cpt = Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).count()
+
+
+
+
     order_count = declarations.count()
+
 
     myFilter = OrderFilter(request.GET, queryset=declarations)
     declarations= myFilter.qs
 
     if request.method=='POST':
         search=request.POST.get('search')
-        declarations = Signaux.objects.filter(send=True).filter(titre__contains=search) | Signaux.objects.filter(send=True).filter(description__contains=search) | Signaux.objects.filter(send=True).filter(lieu__contains=search) | Signaux.objects.filter(send=True).filter(salle__contains=search) | Signaux.objects.filter(send=True).filter(category__name__contains=search) | Signaux.objects.filter(send=True).filter(user__username__contains=search)
+        rech = request.POST.get('rech')
+        if rech:
+            declarations = Signaux.objects.filter(send=True).filter(titre__contains=search) | Signaux.objects.filter(
+                send=True).filter(description__contains=search) | Signaux.objects.filter(send=True).filter(
+                lieu__contains=search) | Signaux.objects.filter(send=True).filter(
+                salle__contains=search) | Signaux.objects.filter(send=True).filter(
+                category__name__contains=search) | Signaux.objects.filter(send=True).filter(
+                user__username__contains=search)
+
+
+
+
+
+
+
     context = {
         'declarations': declarations,
         'myFilter': myFilter,
-        'order_count': order_count
+        'order_count': order_count,
+        'notification':notification,
+        'cpt':cpt,
     }
+
     return render(request, 'responsable/manage.html', context)
 
 @login_required
@@ -213,11 +244,21 @@ def content_signal(request, id):
             declaration.statut='En_cours'
             declaration.save()
             messages.add_message(request, messages.SUCCESS, 'signalement est envoyer à service ')
+            user = Users.objects.get(pk=declaration.user.pk)
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'votre signalement est validé'
+            notification = Notifications(to_user_id=user, from_user_id=resp, message=message, sig_id=declaration.pk)
+            notification.save()
             return redirect(reverse('manage'))
         if (rejeter):
             declaration.statut = "Rejeter"
             declaration.save()
             messages.add_message(request, messages.WARNING, 'signalement est rejeté')
+            user = Users.objects.get(pk=declaration.user.pk)
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'votre signalement est rejeté'
+            notification = Notifications(to_user_id=user, from_user_id=resp, message=message, sig_id=declaration.pk)
+            notification.save()
             return redirect(reverse('manage'))
 
     return render(request, 'responsable/content.html', context)

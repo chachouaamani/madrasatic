@@ -78,3 +78,12 @@ class Annonce(models.Model):
 
     def __str__(self):
         return self.titre
+
+class Notifications(models.Model):
+    to_user=models.ForeignKey(Users,related_name='notification_to',on_delete=models.CASCADE,null=True)
+    from_user = models.ForeignKey(Users, related_name='notification_from', on_delete=models.CASCADE, null=True)
+    message = models.TextField(max_length=2000)
+    has_seen=models.BooleanField(default=False)
+    sig = models.ForeignKey(Signaux,  on_delete=models.CASCADE, null=True)
+
+

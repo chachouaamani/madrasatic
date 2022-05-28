@@ -52,7 +52,23 @@
     </form>
 
 
-    <div class="shopping-cart">
+     <div class="shopping-cart">
+          {% if notification %}
+    {% for noti in notification %}
+
+        <div class="box">
+        {% if noti.image %}
+            <img src="{{ noti.image.url }}" alt="">
+            {% endif %}
+            <div class="content">
+                <h3>{{ noti.sig.titre }}</h3>
+                <span class="price">{{noti.message}}</span>
+
+            </div>
+        </div>
+         {% endfor %}
+     {% endif %}
+
 
     </div>
 

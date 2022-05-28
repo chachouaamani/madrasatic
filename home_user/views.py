@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from users.models import Users
 from .filters import OrderFilter
 from .models import Signaux
-from .models import Catégorie
+from .models import Catégorie,Notifications
 from services.models import Rapport
 
 from django.contrib import messages
@@ -49,7 +49,13 @@ def report_problem(request):
                 signal.image = request.FILES['image']
             signal.save()
             messages.add_message(request,messages.SUCCESS,"votre signalement  est ajouter")
+            resp=Users.objects.get(role__name='responsable').pk
+            message='un nouveau signalement est ajouté'
+            notification=Notifications(to_user_id=resp,from_user_id=user,message=message,sig_id=signal.pk)
+            notification.save()
+
             return redirect('historique')
+
 
 
         if (enregistrer):
@@ -79,10 +85,13 @@ def categorie(request):
     if 'user_id' in request.session:
         user_id = get_user(request).pk
         user = Users.objects.get(pk=user_id)
+        notification = Notifications.objects.filter(to_user_id=user_id).filter(has_seen=False).order_by(
+            '-pk')
 
     context = {'afficher_annonce': afficher_annonce,
                'categorie': Catégorie.objects.all(),
-               'user':user
+               'user':user,
+               'notification':notification,
 
                }
     return render(request, "home_user/index.html", context)
@@ -188,6 +197,10 @@ def add_announcement(request):
                 annonce.image = request.FILES['image']
             annonce.save()
             messages.add_message(request,messages.SUCCESS, "votre annonce est ajouté")
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'une nouvelle annonce est ajoutée'
+            notification = Notifications(to_user_id=resp, from_user_id=user, message=message, sig_id=annonce.pk)
+            notification.save()
 
             return redirect('historique')
 
@@ -286,6 +299,10 @@ def signal_historique(request, id):
                 signal.image = request.FILES['image']
             signal.save()
             messages.add_message(request, messages.SUCCESS, 'votre signalement est ajouté')
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'un nouveau signalement est ajouté'
+            notification = Notifications(to_user_id=resp, from_user_id=signal.user.pk, message=message, sig_id=signal.pk)
+            notification.save()
             return redirect('historique')
 
         if save:

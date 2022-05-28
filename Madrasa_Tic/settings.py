@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
-#from decouple  import config
+from decouple  import config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'responsable.apps.ResponsableConfig',
     'home_user.apps.HomeUserConfig',
     'services.apps.ServicesConfig',
+
 
 ]
 
