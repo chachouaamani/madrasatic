@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <!-- semantic UI -->
+    <link rel="stylesheet" type='text/css'
+          href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.14/semantic.min.css">
+    <!--Chart js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
+            integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css"
+          integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous"/>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <!-- Boxicons -->
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<!-- My CSS -->
+	<link rel="stylesheet" href="{% static 'responsable/resp.css' %}">
+
+    <title>Madrasa_Tic</title>
+</head>
+<body>
+<!-- SIDEBAR -->
+	<section id="sidebar">
+		<a href="#" class="brand">
+			<i class='bx bxs-smile'></i>
+			<span class="text">Madrasa_Tic</span>
+		</a>
+		<ul class="side-menu top">
+			<li class="active">
+				<a href=" {% url 'manage' %}">
+					<i class='bx bxs-dashboard' ></i>
+					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'rapport' %}">
+					<i class='bx bxs-dock-top'></i>
+					<span class="text">Rapport Reçus</span>
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'annonce' %}">
+					<i class='bx bxs-camera'></i>
+					<span class="text">Annouces Reçus</span>
+				</a>
+			</li>
+
+			<li>
+				<a href="{% url 'category_service' %}">
+					<i class='bx bx-table'></i>
+					<span class="text">Tables</span>
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'categorie' %}">
+					<i class='bx bx-home'></i>
+					<span class="text">Home</span>
+				</a>
+			</li>
+            <li>
+				<a href="{% url 'statistic' %}">
+					<i class='bx bx-home'></i>
+					<span class="text">Statistique</span>
+				</a>
+			</li>
+
+
+		</ul>
+		<ul class="side-menu">
+
+			<li>
+				<a href="{% url 'logout' %}" class="logout">
+					<i class='bx bxs-log-out-circle' ></i>
+					<span class="text">Logout</span>
+				</a>
+			</li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+
+
+
+	<!-- CONTENT -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu' ></i>
+
+			<form action="#">
+				<div class="form-input">
+					<input type="search" placeholder="Search...">
+					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+				</div>
+			</form>
+			<input type="checkbox" id="switch-mode" hidden>
+			<label for="switch-mode" class="switch-mode"></label>
+			<a href="#" class="notification">
+				<i class='bx bxs-bell' ></i>
+				<span class="num">8</span>
+			</a>
+			<a href="{% url 'profile' %}" class="profile">
+					<i class='bx bxs-user' ></i>
+			</a>
+		</nav>
+		<!-- NAVBAR -->
+
+<script>
+
+    $(document).ready(function () {
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [{% for ct in ct %}
+                    '{{ ct.name}}',
+                {% endfor %}
+                ],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [{{ sigt }},{{ sigtt }}, 0],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+
+        const labels = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+        ];
+
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'My First dataset',
+                backgroundColor: 'rgb(99,112,255)',
+                borderColor: 'rgb(116,126,243)',
+                data: [{{ sj }}, {{ sf }}, {{ sa }}, {{ sm }}],
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {}
+        };
+
+        const myChart1 = new Chart(
+            document.getElementById('myChart1'),
+            config
+        );
+
+
+        const data2 = {
+            labels: [
+                {% for ct in ct %}
+                    '{{ ct.name}}',
+                {% endfor %}
+            ],
+            datasets: [{
+                label: 'My First Dataset',
+                data: [{{ si }}, {{ signa }}, 3],
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
+                ],
+                hoverOffset: 4
+            }]
+        };
+        const config2 = {
+            type: 'doughnut',
+            data: data2,
+        };
+
+
+        const myChart2 = new Chart(
+            document.getElementById('myChart2'),
+            config2
+        );
+
+
+    });
+</script>
+
+<div style="width: 50% ;height: 50%">
+    <canvas id="myChart"></canvas>
+</div>
+<canvas id="myChart1" width="20" height="4"></canvas>
+<canvas id="myChart2" width="20" height="4" ></canvas>
+    </section>
+<script src="{% static 'responsable/script.js' %}"></script>
+</body>
+</html>

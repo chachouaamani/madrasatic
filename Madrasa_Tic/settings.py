@@ -50,8 +50,12 @@ INSTALLED_APPS = [
     'responsable.apps.ResponsableConfig',
     'home_user.apps.HomeUserConfig',
     'services.apps.ServicesConfig',
+    'rest_framework',
+    'django_filters',
 
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -92,8 +96,10 @@ DATABASES = {
     'default': {  
         'ENGINE': 'django.db.backends.mysql',  
         'NAME': 'madrasatic',
-        'USER': 'root',  
-        'PASSWORD': '',
+        'USER': 'root',
+        'PASSWORD': 'omar1970',
+
+
         'HOST': '127.0.0.1',  
         'PORT': '3306',  
         'OPTIONS': {  

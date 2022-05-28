@@ -1,32 +1,3 @@
-let edit = document.querySelector('.edit');
-let save = document.querySelector('.save');
-let put = document.querySelector('.put');
-
-document.querySelector('#hidden').onclick = () =>{
-    edit.classList.remove('visible');
-    edit.classList.add('invisible');
-    save.classList.remove('invisible');
-    save.classList.add('visible');
-    put.classList.remove('invisible');
-    put.classList.add('visible');
-
-}
-
-document.querySelector('#unhidden').onclick = () =>{
-    save.classList.remove('visible');
-    save.classList.add('invisible');
-    put.classList.remove('visible');
-    put.classList.add('invisible');
-    edit.classList.remove('invisible');
-    edit.classList.add('visible');
-
-}
-
-
-
-
-
-
 
 let searchForm = document.querySelector('.search-form');
 
@@ -70,3 +41,4 @@ window.onscroll = () =>{
     loginForm.classList.remove('active');
     navbar.classList.remove('active');
 }
+

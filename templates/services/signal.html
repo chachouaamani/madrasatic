@@ -1,30 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
-     {% load static %}
-    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madrasa_Tic</title>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
 
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- font awesome cdn link  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="{% static 'home_user/contenu.css' %}">
+
 </head>
 <body>
-    {%  for signalement in sig %}
-        <article class="media content-section">
-          <img class="rounded-circle img-fluid" style="width:2vw; border-radius: 50%;" src="{{ signalement.User.profile_picture.url }}">
-           <div class="media-body">
-            <div class="article-metadata">
-              <a class="mr-2" href="#" style="text-decoration: none;">{{ signalement.User.username }}</a>
-              <small class="text-muted">{{ signalement.post_date }}</small>
-            </div>
-            <h2><a class="article-title" href="#" style="text-decoration: none;font-size: 25px;">{{ signalement.title }}</a></h2>
-            <p class="article-content">{{ signalement.description}}</p>
-            </div>
-        </article>
-         {% endfor %}
-           <br>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<!-- header section starts  -->
+
+
+<!-- header section ends -->
+
+<div class="container">
+    <div class="main-body">
+
+
+          <div class="row gutters-sm">
+              {% if signal %}
+
+              {% if signal.image %}
+
+            <div class="col-md-4 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex flex-column align-items-center text-center">
+                    <img src="{{ signal.image.url }}" alt="Admin" class="rounded" width="100%">
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+              {% endif %}
+
+
+
+
+            <div class="col-md-8">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Username</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ signal.user.username }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Titre</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ signal.titre }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Discription</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ signal.description }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Catégorie</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ signal.category.name }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Lieu</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ signal.lieu }}<br>{{ signal.salle }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Date et heure</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ signal.date }}  {{ signal.heure }}
+                    </div>
+                  </div>
+                  <hr>
+
+
+                </div>
+              </div>
+
+
+
+
+
+            </div>
+
+                  {% if rapport.valider %}
+
+            {% if rapport %}
+
+             <div class="col-md-8">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0" style="font-size: 2rem;">RAPPORT</h6>
+                    </div>
+
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Titre</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ rapport.title }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Discription</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ rapport.dexription }}
+                    </div>
+                  </div>
+                  <hr>
+                    {% if rapport.image %}
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <img src="{{ rapport.image.url }}" class="mb-0 rapport">
+                    </div>
+
+
+                  </div>
+                    {% endif %}
+
+                  </div>
+                </div>
+              </div>
+
+                  {% endif %}
+                          {% endif %}
+
+               <div class="row">
+                    <div class="col-sm-12">
+                      <a class="btn btn-info "  href="{% url 'services'  %}">Retourner</a>
+                    </div>
+                  </div>
+                   <div class="row">
+                    <div class="col-sm-12">
+                        <form method="post">{% csrf_token %}
+                      <button class="btn btn-info" >Marquer comme terminer</button>
+                        </form>
+                    </div>
+                  </div>
+
+
+
+
+          {% endif %}
+            </div>
+          </div>
+
+        </div>
+    </div>
+
+
+
+<!-- footer section ends -->
+
+<section class="footer">
+
+    <div class="share">
+        <a href="#" class="fab fa-facebook-f"></a>
+        <a href="#" class="fab fa-twitter"></a>
+        <a href="#" class="fab fa-instagram"></a>
+        <a href="#" class="fab fa-linkedin"></a>
+    </div>
+
+    <h1 class="credit"> created by <span> The Matrix </span> | all rights reserved! </h1>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- custom js file link  -->
+<script src="{% static 'home_user/signal.js' %}"></script>
+
 </body>
 </html>

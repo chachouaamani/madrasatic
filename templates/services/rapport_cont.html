@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madrasa_Tic</title>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- font awesome cdn link  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="{% static 'home_user/contenu.css' %}">
+
+</head>
+<body>
+
+<!-- header section starts  -->
+
+
+<!-- header section ends -->
+
+<div class="container">
+    <div class="main-body">
+
+
+
+
+          <div class="row gutters-sm">
+              {% if rapport  %}
+              {% if rapport.image %}
+
+            <div class="col-md-4 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex flex-column align-items-center text-center">
+                    <img src="{{ rapport.image.url }}" alt="Admin" class="rounded" width="100%">
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+              {% endif %}
+
+
+
+
+            <div class="col-md-8">
+              <div class="card mb-3">
+                <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Titre de signalement</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ rapport.signalement.titre }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Service</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ rapport.user.role.service.name }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Titre de rapport</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ rapport.title }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Discription</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ rapport.description }}
+                    </div>
+                  </div>
+                  <hr>
+
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Date</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                     {{ rapport.date }}
+                    </div>
+                  </div>
+                  <hr>
+
+
+                </div>
+              </div>
+
+
+
+            </div>
+
+
+
+               <div class="row">
+                    <div class="col-sm-12">
+                      <a href="{% url 'rapport_service' %}"><button    class="btn btn-info " >Retourner</button></a>
+
+                    </div>
+                  </div>
+
+
+
+            </div>
+    {% endif %}
+
+          </div>
+
+
+        </div>
+    </div>
+
+
+
+<!-- footer section ends -->
+
+<section class="footer">
+
+    <div class="share">
+        <a href="#" class="fab fa-facebook-f"></a>
+        <a href="#" class="fab fa-twitter"></a>
+        <a href="#" class="fab fa-instagram"></a>
+        <a href="#" class="fab fa-linkedin"></a>
+    </div>
+
+    <h1 class="credit"> created by <span> The Matrix </span> | all rights reserved! </h1>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- custom js file link  -->
+<script src="{% static 'home_user/signal.js' %}"></script>
+
+</body>
+</html>

@@ -314,7 +314,7 @@ body{
 .row h6{
     font-size: 1.5rem;
 }
-}
+
 .main-body {
     padding: 15px;
 }
@@ -400,6 +400,24 @@ body{
 
 .footer .credit span{
   color:var(--red);
+}
+
+.btn_header{
+    margin-top: 1rem;
+    display: inline-block;
+    padding:.8rem 3rem;
+    font-size: 1.7rem;
+    border-radius: .5rem;
+    border:.2rem solid var(--black);
+    color:var(--black);
+    cursor: pointer;
+    background: none;
+    position: relative;
+}
+
+.btn_header:hover{
+    background: var( --gradient);
+    color:#fff;
 }
 
 

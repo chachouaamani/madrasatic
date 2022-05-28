@@ -1,45 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
+    <title>Madrasa_Tic</title>
 
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{% static 'home_user/form.css' %}">
 
-<header class="header">
-
-    <a href="#" class="logo"><img src="ansai..jpg" width="80px" height="40px">groco </a>
-
-    <nav class="navbar">
-        <a href="#home">accueil</a>
-        <a href="#features">catégories</a>
-        <a href="#review">annonces</a>
-    </nav>
-
-    <div class="icons">
-        <div class="fas fa-bars" id="menu-btn"></div>
-        <div class="fas fa-search" id="search-btn"></div>
-        <div class="fas fa-bell" id="cart-btn"></div>
-        <div class="fas fa-user" id="login-btn"></div>
-    </div>
-
-    <form action="" class="search-form">
-        <input type="search" id="search-box" placeholder="search here...">
-        <label for="search-box" class="fas fa-search"></label>
-    </form>
-
-    <div class="shopping-cart">
-
-
-    </div>
-
-    <form action="" class="login-form">
-        <input type="submit" value="logout" class="btn_header">
-
-        <input type="submit" value="profile" class="btn_header">
-    </form>
-
-</header>
 </head>
 
 <!-- header section ends -->
@@ -48,7 +16,8 @@
 
   <div class="formulaire">
 
-       <form  method="post" class="form" enctype="multipart/form-data">
+
+       <form  method="post" class="form" enctype="multipart/form-data">{% csrf_token %}
 
 
          <div class="title">
@@ -67,9 +36,18 @@
 
         <div class="inputfield">
 
-        <button type="submit"  class="btn" >Ajouter</button>
+          <button type="submit"  class="btn" value="0" name="save" >Ajouter</button>
+
 
         </div>
+
+             <div class="inputfield">
+
+          <button type="submit"  class="btn" value="0" name="cancel" >Annuler</button>
+
+
+        </div>
+
 
 
 
@@ -89,6 +67,6 @@
 
 </section>
 
-  <script src="index.js"></script>
+  <script src="{% static 'home_user/form.js' %}"></script>
 </body>
 </html>

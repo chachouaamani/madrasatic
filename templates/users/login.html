@@ -2,7 +2,7 @@
 <html>
 {% load static %}
 <head>
-    <title>login</title>
+    <title>Madrasa_Tic</title>
     <!-- CSS only -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'users/style/login.css' %}">
@@ -29,7 +29,7 @@
                 <input type="password" name="password" pattern=".{8,}" title="8 caractère minimum"  />
             </label>
             <a href="{% url 'reset-password' %}" class="forgot-pass">  <p >Oublier mot de passe?</p></a>
-            <button type="submit" class="submit" value="0" name="signin" >Sign In</button>
+            <button type="submit" class="submit" value="0" name="signin" >Connexion</button>
 
         </div>
 
@@ -44,8 +44,8 @@
                     <h3 >Si vous avez déjà un compte, connectez-vous</h3>
                 </div>
                 <div class="img__btn">
-                    <span class="m--up">Sign Up</span>
-                    <span class="m--in">Sign In</span>
+                    <span class="m--up">Inscription</span>
+                    <span class="m--in">Connexion</span>
                 </div>
             </div>
             <div class="form sign-up">
@@ -78,7 +78,7 @@
                     <span>Confirmer Mot de passe</span>
                     <input type="password" name="password2"  />
                 </label>
-                <button type="submit" class="submit" value="0" name="signup">Sign Up</button>
+                <button type="submit" class="submit" value="0" name="signup">Inscrire</button>
 
 
             </div>

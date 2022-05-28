@@ -23,14 +23,26 @@
 
 <header class="header">
 
-    <a href="#" class="logo"><img src="ansai..jpg" width="80px" height="40px">groco </a>
+    <a href="#" class="logo"><img src="{% static 'welcome/images/logo.png' %}" width="80px" height="40px">Madrasa_Tic </a>
 
     <nav class="navbar">
+        {% if user.is_admin %}
+        <a href="{% url 'administration' %}">accueil</a>
+        <a href="{% url 'administration' %}#features">catégories</a>
+        <a href="{% url 'administration' %}#review">annonces</a>
+        <a href="{% url 'historique' %}">historique</a>
+        {% else %}
         <a href="{% url 'categorie' %}">accueil</a>
         <a href="{% url 'categorie' %}#features">catégories</a>
         <a href="{% url 'categorie' %}#review">annonces</a>
         <a href="{% url 'historique' %}">historique</a>
-
+        {% endif %}
+    {% if user.is_responsable %}
+         <a href="{% url 'manage' %}">Dashboard</a>
+        {% endif %}
+    {% if user.is_service %}
+         <a href="{% url 'services' %}">Dashboard</a>
+    {% endif %}
     </nav>
 
     <div class="icons">
@@ -50,11 +62,11 @@
 
     </div>
 
-    <form action="" class="login-form">
-        <input type="submit" value="logout" class="btn">
+   <div  class="login-form">
+        <a href="{% url 'logout' %}"><button value="logout" class="btn_header">logout</button></a>
 
-        <input type="submit" value="profile" class="btn">
-    </form>
+        <a href="{% url 'profile' %}"><button value="logout" class="btn_header">profile</button></a>
+    </div>
 
 </header>
 
@@ -167,6 +179,15 @@
 
                   </div>
                   <hr>
+                 <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Service</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ rapport.user.role.service.name }}
+                    </div>
+                  </div>
+                  <hr>
                   <div class="row">
                     <div class="col-sm-3">
                       <h6 class="mb-0">Titre</h6>
@@ -181,7 +202,7 @@
                       <h6 class="mb-0">Discription</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ rapport.dexription }}
+                      {{ rapport.description }}
                     </div>
                   </div>
                   <hr>
@@ -204,7 +225,13 @@
 
                <div class="row">
                     <div class="col-sm-12">
-                      <a class="btn btn-info "  href="{% url 'signals' id=signal.category.pk %}">Retourner</a>
+                       {% if user.is_admin %}
+                              <a class="btn btn-info "  href="{% url 'administration' %}#review">Retourner</a>
+
+                        {% elif not user.is_admin %}
+                      <a class="btn btn-info "  href="{% url 'categorie' %}#review">Retourner</a>
+                   {% endif %}
+
                     </div>
                   </div>
 

@@ -1,0 +1,215 @@
+<!-- header section starts  -->
+
+<!DOCTYPE html>
+<html lang="en">
+{% load static%}
+<head>
+<title>Madrasa_Tic</title>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <link rel="stylesheet" href="{% static 'home_user/form.css' %}">
+    </head>
+<body>
+<header class="header">
+
+    <a href="#" class="logo"><img src="{% static 'welcome/images/logo.png' %}" width="80px" height="40px">Madrasa_Tic </a>
+
+    <nav class="navbar">
+        {% if user.is_admin %}
+        <a href="{% url 'administration' %}">accueil</a>
+        <a href="{% url 'administration' %}#features">catégories</a>
+        <a href="{% url 'administration' %}#review">annonces</a>
+        <a href="{% url 'historique' %}">historique</a>
+        {% else %}
+        <a href="{% url 'categorie' %}">accueil</a>
+        <a href="{% url 'categorie' %}#features">catégories</a>
+        <a href="{% url 'categorie' %}#review">annonces</a>
+        <a href="{% url 'historique' %}">historique</a>
+        {% endif %}
+    {% if user.is_responsable %}
+         <a href="{% url 'manage' %}">Dashboard</a>
+        {% endif %}
+    {% if user.is_service %}
+         <a href="{% url 'services' %}">Dashboard</a>
+    {% endif %}
+    </nav>
+
+    <div class="icons">
+        <div class="fas fa-bars" id="menu-btn"></div>
+        <div class="fas fa-search" id="search-btn"></div>
+        <div class="fas fa-bell" id="cart-btn"></div>
+        <div class="fas fa-user" id="login-btn"></div>
+    </div>
+
+    <form action="" class="search-form">
+        <input type="search" id="search-box" placeholder="search here...">
+        <label for="search-box" class="fas fa-search"></label>
+    </form>
+
+    <div class="shopping-cart">
+
+
+    </div>
+
+    <div  class="login-form">
+        <a href="{% url 'logout' %}"><button value="logout" class="btn_header">logout</button></a>
+
+        <a href="{% url 'profile' %}"><button value="logout" class="btn_header">profile</button></a>
+    </div>
+
+</header>
+
+
+<!-- header section ends -->
+
+   <div class="main-container">
+
+    <div class="content">
+  <div class="formulaire">
+    <div class="title">
+      Modifier Signalement
+    </div>
+    <div class="form">
+        <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        {% if signal %}
+
+       <div class="inputfield">
+
+          <label>Titre</label>
+          <input type="text" name="titre" class="input" required value="{{ signal.titre }}">
+       </div>
+
+        <div class="inputfield">
+          <label>Catégorie</label>
+
+          <div class="custom_select">
+
+            <select name="selected_categorie"  >
+                {% if cat %}
+
+                 <option value="{{ signal.category_id }}">{{ signal.category }}</option>
+                    {% for cat in cat %}
+                    <option value="{{ cat.id }}" required>{{ cat.name }}</option>
+
+                {% endfor %}
+            {% endif %}
+            </select>
+          </div>
+       </div>
+         <div class="inputfield">
+
+          <label>Lieu</label>
+
+
+          <div class="custom_select">
+
+            <select name="lieu" required >
+                 <option >{{ signal.lieu }}</option>
+                 <option value="Cycle supèrieure"> Cycle supèrieure</option>
+                 <option value="Cycle préparatoire">Cycle préparatoire</option>
+
+            </select>
+          </div>
+         </div>
+             <div class="inputfield">
+                <label></label>
+
+             <div class="custom_select">
+
+            <select name="salle" required>
+                 <option>{{ signal.salle }}</option>
+                <option value="Amphi A">Amphi A</option>
+                <option value="Amphi B">Amphi B</option>
+                <option value="Amphi C">Amphi C</option>
+                <option value="Amphi D">Amphi D</option>
+                <option value="Amphi E">Amphi E</option>
+                 <option value="Salle 1">Salle 1</option>
+                 <option value="Salle 2">Salle 2</option>
+                 <option value="Salle 3">Salle 3</option>
+                 <option value="Salle 4">Salle 4</option>
+                  <option value="Salle 5">Salle 5</option>
+                 <option value="SA1">SA1</option>
+                 <option value="SA2">SA2</option>
+                 <option value="SA3">SA3</option>
+                 <option value="SA4">SA4</option>
+                  <option value="B1">B1</option>
+                 <option value="B2">B2</option>
+                 <option value="B3">B3</option>
+                 <option value="B4">B4</option>
+                 <option value="tp1">tp1</option>
+                 <option value="tp2">tp2</option>
+                 <option value="tp3">tp3</option>
+                 <option value="tp4">tp4</option>
+                 <option value="tp5">tp5</option>
+                 <option value="tp6">tp6</option>
+                 <option value="tp7">tp7</option>
+                 <option value="tp8">tp8</option>
+                 <option value="tp9">tp9</option>
+                 <option value="tp10">tp10</option>
+                 <option value="tp11">tp11</option>
+                 <option value="tp12">tp12</option>
+                 <option value="tp13">tp13</option>
+                 <option value="tp14">tp14</option>
+
+            </select>
+          </div>
+
+         </div>
+
+
+
+        <div class="inputfield">
+          <label>Date: {{ signal.date }}</label>
+          <input type="date" class="input" name="date">
+       </div>
+        <div class="inputfield">
+          <label>Heure: {{ signal.heure }}</label>
+
+          <input type="time" class="input" name="heure"   >
+       </div>
+        <div  class="photo">
+        {% if signal.image %}
+            <img src="{{ signal.image.url }} " height="50px" width="50px">
+            {% endif %}
+
+            <input type="file" name="image" class="" >
+        </div>
+      <div class="inputfield">
+          <label>Description</label>
+          <textarea class="textarea" name="description" required>{{ signal.description }}</textarea>
+       </div>
+      <div class="inputfield">
+          <button type="submit" value="0" class="btn" name="delete">Supprimer</button>
+      </div>
+      <div class="inputfield">
+          <button type="submit" value="0" class="btn" name="save">Enregistrer</button>
+      </div>
+            <div class="inputfield">
+          <button type="submit" value="0" class="btn" name="signaler">Signaler</button>
+      </div>
+        {% endif %}
+        </form>
+    </div>
+</div>
+     </div>
+
+ </div>
+
+
+</div>
+
+<section class="footer">
+
+    <div class="share">
+        <a href="#" class="fab fa-facebook-f"></a>
+        <a href="#" class="fab fa-twitter"></a>
+        <a href="#" class="fab fa-instagram"></a>
+        <a href="#" class="fab fa-linkedin"></a>
+    </div>
+
+    <h1 class="credit"> created by <span> The Matrix </span> | all rights reserved! </h1>
+
+</section>
+  <script src="{% static 'home_user/form.js' %}"></script>
+</body>
+</html>
