@@ -53,7 +53,7 @@
     </div>
 
     <form action="" class="search-form">
-        <input type="search" id="search-box" placeholder="search here...">
+        <input type="search" id="search-box" placeholder="Rechercher ici...">
         <label for="search-box" class="fas fa-search"></label>
     </form>
 
@@ -225,12 +225,10 @@
 
                <div class="row">
                     <div class="col-sm-12">
-                       {% if user.is_admin %}
-                              <a class="btn btn-info "  href="{% url 'administration' %}#review">Retourner</a>
 
-                        {% elif not user.is_admin %}
-                      <a class="btn btn-info "  href="{% url 'categorie' %}#review">Retourner</a>
-                   {% endif %}
+
+                      <a class="btn btn-info "  href="{% url 'signals' id=signal.category.pk %}#review">Retourner</a>
+
 
                     </div>
                   </div>

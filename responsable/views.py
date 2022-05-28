@@ -5,7 +5,9 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from home_user.models import Signaux, Catégorie, Annonce
+
+from home_user.filters import OrderFilter
+from home_user.models import Signaux, Catégorie, Annonce,Notifications
 from users.models import Users, Service
 from services.models import Rapport
 from django.contrib.auth.decorators import login_required
@@ -16,9 +18,17 @@ from django.contrib.auth.decorators import login_required
 def category_table(request):
     category = Catégorie.objects.all()
     service = Service.objects.all()
+
+    if request.method=='POST':
+        search=request.POST.get('search')
+        category = Catégorie.objects.filter(name__contains=search) |  Catégorie.objects.filter(description__contains=search)
+        service = Service.objects.filter(name__contains=search) | Service.objects.filter(description__contains=search)
+
+    notification = Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).order_by( '-pk')
     context = {
         'category': category,
         'service': service,
+        'notification':notification,
     }
     return render(request, 'responsable/category_table.html', context)
 
@@ -38,7 +48,7 @@ def add_category(request):
                 messages.add_message(request, messages.SUCCESS, "categorie est ajouter")
                 return redirect('category_service')
             else:
-                messages.add_message(request, messages.INFO, "categorie est déjà exister!")
+                messages.add_message(request, messages.WARNING, "categorie est déjà exister!")
                 return redirect('category_service')
         if (cancel):
             return redirect('category_service')
@@ -92,7 +102,7 @@ def add_service(request):
                 messages.add_message(request, messages.SUCCESS, "service est ajouter")
                 return redirect('category_service')
             else:
-                messages.add_message(request, messages.INFO, "service est déjà exister!")
+                messages.add_message(request, messages.WARNING, "service est déjà exister!")
                 return redirect('category_service')
         if (cancel):
             return redirect('category_service')
@@ -131,8 +141,13 @@ def service_manage(request, id):
 @login_required
 def annonce(request):
     annonce = Annonce.objects.all()
+    if request.method == 'POST':
+        search = request.POST.get('search')
+        annonce = Annonce.objects.filter(titre__contains=search)| Annonce.objects.filter(description__contains=search)| Annonce.objects.filter(user__username__contains=search)
+    notification = Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).order_by('-pk')
     context = {
-        'annonce': annonce
+        'annonce': annonce,
+        'notification':notification,
 
     }
 
@@ -141,18 +156,56 @@ def annonce(request):
 @login_required
 def rapport(request):
     rapport = Rapport.objects.all()
+    if request.method == 'POST':
+        search = request.POST.get('search')
+        rapport = Rapport.objects.filter(title__contains=search)| Rapport.objects.filter(description__contains=search)| Rapport.objects.filter(user__username__contains=search)
+    notification = Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).order_by('-pk')
     context = {
-        'rapport': rapport
+        'rapport': rapport,
+        'notification':notification,
     }
     return render(request, 'responsable/rapport.html', context)
 
 @login_required
 def manage(request):
     declarations = Signaux.objects.filter(send=True).order_by('-pk')
+    notification=Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).order_by('-pk')
+    cpt = Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).count()
+
+
+
+
+    order_count = declarations.count()
+
+
+    myFilter = OrderFilter(request.GET, queryset=declarations)
+    declarations= myFilter.qs
+
+    if request.method=='POST':
+        search=request.POST.get('search')
+        rech = request.POST.get('rech')
+        if rech:
+            declarations = Signaux.objects.filter(send=True).filter(titre__contains=search) | Signaux.objects.filter(
+                send=True).filter(description__contains=search) | Signaux.objects.filter(send=True).filter(
+                lieu__contains=search) | Signaux.objects.filter(send=True).filter(
+                salle__contains=search) | Signaux.objects.filter(send=True).filter(
+                category__name__contains=search) | Signaux.objects.filter(send=True).filter(
+                user__username__contains=search)
+
+
+
+
+
+
 
     context = {
-        'declarations': declarations
+        'declarations': declarations,
+        'myFilter': myFilter,
+        'order_count': order_count,
+        'notification':notification,
+        'cpt':cpt,
     }
+
     return render(request, 'responsable/manage.html', context)
 
 @login_required
@@ -183,16 +236,29 @@ def content_signal(request, id):
         # declaration.complement=complement
         if (delete):
             declaration.delete()
+            messages.add_message(request,messages.ERROR,'signalement est supprimé')
             return redirect(reverse('manage'))
         if (valider):
             declaration.service_id = service_id
             declaration.validate = True
             declaration.statut='En_cours'
             declaration.save()
+            messages.add_message(request, messages.SUCCESS, 'signalement est envoyer à service ')
+            user = Users.objects.get(pk=declaration.user.pk)
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'votre signalement est validé'
+            notification = Notifications(to_user_id=user, from_user_id=resp, message=message, sig_id=declaration.pk)
+            notification.save()
             return redirect(reverse('manage'))
         if (rejeter):
             declaration.statut = "Rejeter"
             declaration.save()
+            messages.add_message(request, messages.WARNING, 'signalement est rejeté')
+            user = Users.objects.get(pk=declaration.user.pk)
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'votre signalement est rejeté'
+            notification = Notifications(to_user_id=user, from_user_id=resp, message=message, sig_id=declaration.pk)
+            notification.save()
             return redirect(reverse('manage'))
 
     return render(request, 'responsable/content.html', context)
@@ -211,15 +277,18 @@ def content_rapport(request, id):
 
         if (delete):
             rapport.delete()
+            messages.add_message(request, messages.ERROR, 'rapport est supprimé')
             return redirect(reverse('rapport'))
         if (valider):
             rapport.validate = True
             rapport.status='Traité'
             rapport.save()
+            messages.add_message(request, messages.SUCCESS, 'rapport est validé')
             return redirect(reverse('rapport'))
         if (rejeter):
             rapport.status = "Rejeter"
             rapport.save()
+            messages.add_message(request, messages.WARNING, 'rapport est rejeté')
             return redirect(reverse('rapport'))
 
     return render(request, 'responsable/content_rapport.html', context)
@@ -241,15 +310,18 @@ def content_annonce(request, id):
 
         if (delete):
             annonce.delete()
+            messages.add_message(request, messages.ERROR, 'annonce est supprimé')
             return redirect(reverse('annonce'))
         if (valider):
             annonce.validate = True
             annonce.status='Traité'
             annonce.save()
+            messages.add_message(request, messages.SUCCESS, 'annonce est validé')
             return redirect(reverse('annonce'))
         if (rejeter):
             annonce.status = "Rejeter"
             annonce.save()
+            messages.add_message(request, messages.WARNING, 'annonce est rejeté')
             return redirect(reverse('annonce'))
 
     return render(request, 'responsable/content_annonce.html', context)

@@ -76,6 +76,12 @@
 <div class="container">
     {% if data %}
     <div class="main-body">
+    {% if messages %}
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}" role="alert">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
 
           <div class="row gutters-sm">
 

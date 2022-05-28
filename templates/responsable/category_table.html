@@ -49,6 +49,12 @@
 					<span class="text">Tables</span>
 				</a>
 			</li>
+            <li>
+				<a href="{% url 'statistic' %}">
+					<i class='bx bx-home'></i>
+					<span class="text">Statistique</span>
+				</a>
+			</li>
 			<li>
 				<a href="{% url 'categorie' %}">
 					<i class='bx bx-home'></i>
@@ -65,12 +71,7 @@
 					<span class="text">Logout</span>
 				</a>
 			</li>
-             <li>
-				<a href="{% url 'statistic' %}">
-					<i class='bx bx-home'></i>
-					<span class="text">Statistique</span>
-				</a>
-			</li>
+
 		</ul>
 	</section>
 	<!-- SIDEBAR -->
@@ -83,18 +84,38 @@
 		<nav>
 			<i class='bx bx-menu' ></i>
 
-			<form action="#">
+			<form method="post" >{% csrf_token %}
 				<div class="form-input">
-					<input type="search" placeholder="Search...">
+					<input type="search" placeholder="Rechercher ici..." name="search">
 					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
 				</div>
 			</form>
 			<input type="checkbox" id="switch-mode" hidden>
 			<label for="switch-mode" class="switch-mode"></label>
-			<a href="#" class="notification">
-				<i class='bx bxs-bell' ></i>
-				<span class="num">8</span>
-			</a>
+			 <div class="icon" id="bell"> <img src="https://www.citypng.com/public/uploads/preview/-11594729379yqc5ztoiwy.png" alt=""> </div>
+    <div class="notifications" id="box">
+
+
+
+        <h2>Notifications - <span></span></h2>
+    {% if notification %}
+    {% for noti in notification %}
+
+        <div class="notifications-item" >
+        {% if noti.sig.image %}
+            <img src="{{ noti.sig.image.url }}" alt="img">
+            {% endif %}
+            <div class="text">
+                <h4>{{ noti.sig.titre}}</h4>
+                <p>{{ noti.message }}</p>
+            </div>
+        </div>
+
+
+        {% endfor %}
+    {% endif %}
+
+    </div>
 			<a href="{% url 'profile' %}" class="profile">
 					<i class='bx bxs-user' ></i>
 			</a>

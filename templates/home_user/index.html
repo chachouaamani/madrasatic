@@ -46,11 +46,29 @@
     </div>
 
     <form action="" class="search-form">
-        <input type="search" id="search-box" placeholder="search here...">
+        <input type="search" id="search-box" placeholder="Rechercher ici...">
         <label for="search-box" class="fas fa-search"></label>
+
     </form>
 
-    <div class="shopping-cart">
+
+     <div class="shopping-cart">
+          {% if notification %}
+    {% for noti in notification %}
+
+        <div class="box">
+        {% if noti.image %}
+            <img src="{{ noti.image.url }}" alt="">
+            {% endif %}
+            <div class="content">
+                <h3>{{ noti.sig.titre }}</h3>
+                <span class="price">{{noti.message}}</span>
+
+            </div>
+        </div>
+         {% endfor %}
+     {% endif %}
+
 
     </div>
 
@@ -71,6 +89,7 @@
 <section class="home" id="home">
 
     <div class="content">
+
         <h3>Vous avez <span>un problème </span> signaler le</h3>
         <p>Avec le site Madrasa_Tic les problémes toujours solver!</p>
         <a href="{% url 'report_problem' %}" class="btn">Signaler problème</a>

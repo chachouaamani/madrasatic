@@ -141,7 +141,11 @@ def signin_signup(request):
                         if user.role.name == "responsable":
                             return redirect(reverse('manage'))
 
+<<<<<<< HEAD
                         if user.role.name=='service':
+=======
+                        if user.role.name =='service':
+>>>>>>> 7b8810df75fae719f15304404baba27f30a85c1e
                             return redirect('services')
                         if user.role.name == "administration" or user.role.name == "club":
                             return redirect(reverse('administration'))
@@ -290,7 +294,8 @@ def edit_profile(request):
             if len(Password1) >= 8 and Password2 == Password1:
                 data.password = Password1
                 data.set_password(data.password)
-            data.save()
+
+
             if not Users.objects.filter(email=Email).exists():
                 data.email = Email
                 data.is_active = False
@@ -298,6 +303,10 @@ def edit_profile(request):
                 send_activation_email(data, request)
                 messages.add_message(request, messages.SUCCESS, "nous avons vous envoyer un email")
                 return redirect('signin&signup')
+
+            data.save()
+            messages.add_message(request, messages.SUCCESS, "modification est sauvgardé")
+            return redirect('profile')
 
     return render(request, 'users/edit_profile.html', context)
 

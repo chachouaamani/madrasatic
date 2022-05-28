@@ -364,7 +364,10 @@ section{
     background: var( --gradient);
     color:#fff;
 }
-
+.btn_filter{
+    background: var( --gradient);
+    color:#fff;
+}
 .header{
     position: fixed;
     top:0; left:0; right: 0;
