@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from rest_framework import viewsets
 
@@ -8,28 +9,54 @@ from users.models import Users
 from .filters import OrderFilter
 from .models import Signaux
 from .models import Catégorie,Notifications
-from services.models import Rapport
+from services.models import Rapport,Rapport_archivé
 
 from django.contrib import messages
 # Create your views here.
 from home_user.models import Annonce
-
-from .serializers import CatégorieSerializer , SignauxSerializer , AnnonceSerializer
-
-class CatégorieViewSet (viewsets.ModelViewSet):
-    queryset = Catégorie.objects.all()
-    serializer_class = CatégorieSerializer
+from rest_framework.response import Response
+from rest_framework import status
 
 
-class SignauxViewSet(viewsets.ModelViewSet):
-    queryset = Signaux.objects.all()
-    serializer_class = SignauxSerializer
+from .serializers import SignauxSerializer
+from rest_framework.decorators import api_view
+
+@api_view (['GET','POST'])
+def signaux_list (request):
+    if request.method== 'GET':
+        signaux=Signaux.objects.all()
+        serializer=SignauxSerializer(signaux,many=True)
+        return Response(serializer.data)
+    if request.method=='POST':
+        serializer=SignauxSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
 
 
-class AnnonceViewSet(viewsets.ModelViewSet):
-        queryset = Annonce.objects.all()
-        serializer_class = AnnonceSerializer
+@api_view (['GET','PUT','DELETE'])
+def signaux_detail(request,id):
+   try:
+       sigaux=Signaux.objects.get(pk=id)
+   except Signaux.DoesNotExist:
+      return Response(status=status.HTTP_404_NOT_FOUND)
 
+   if request.method=='GET':
+
+       serializer=SignauxSerializer(sigaux)
+       return Response(serializer.data)
+
+   elif request.method=='PUT':
+
+       serialiser=SignauxSerializer(sigaux,data=request.data)
+       if serialiser.is_valid():
+           serialiser.save()
+           return Response(serialiser.data)
+       return Response(serialiser.error, status=status.HTTP_400_BAD_REQUEST)
+
+   elif request.method =='DELETE':
+       Signaux.delete()
+       return Response(status=status.HTTP_204_NO_CONTENT)
 
 # Create your views here.
 
@@ -208,7 +235,7 @@ def add_announcement(request):
 
 
             annonce = Annonce(user_id=user, titre=Titre, description=Description, date_debut=Date_debut,
-                              date_fin=Date_fin,send=True)
+                              date_fin=Date_fin,send=True,status='En_cours')
 
             if len(request.FILES) != 0:
                 annonce.image = request.FILES['image']
@@ -368,6 +395,7 @@ def annonce_historique(request, id):
         if valider:
 
             annonce.send = True
+            annonce.status='En_cours'
             annonce.titre=titre
             annonce.description=description
             if len(date_fin)!=0 :

@@ -27,13 +27,13 @@ class Service(models.Model):
 
 class Role(models.Model):
     name = models.CharField(max_length=50, null=False, default="utilisateur", unique=True)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, default=1)
+    service = models.ForeignKey(Service, on_delete=models.RESTRICT, default=1)
 
     def __str__(self):
         return self.name
 
 class Users(AbstractUser):
-    role =models.ForeignKey(Role, on_delete=models.CASCADE, default=1)
+    role =models.ForeignKey(Role, on_delete=models.RESTRICT, default=1)
     image = models.ImageField(null=False, blank=True, upload_to=filepath)
 
     @property
@@ -48,7 +48,7 @@ class Users(AbstractUser):
 
     @property
     def is_service(self):
-        if self.role.name == "service":
+        if self.role.name.__contains__('service'):
             return True
 
     def __str__(self):

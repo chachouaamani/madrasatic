@@ -20,12 +20,7 @@ from django.contrib import admin
 
 
 from django.urls import path, include
-from rest_framework import routers
-from users.urls import router as users_router
-from home_user.urls import router as home_user_router
-router = routers.DefaultRouter()
-router.registry.extend(users_router.registry)
-router.registry.extend(home_user_router.registry)
+
 
 
 urlpatterns = [
@@ -35,8 +30,9 @@ urlpatterns = [
     path('home_user/', include('home_user.urls')),
     path('responsable/', include('responsable.urls')),
     path('services/', include('services.urls')),
-    path('amani/',include(router.urls)),
 
+
+   #REST FRAMEWORK URLS
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Boxicons -->
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+	<!-- My CSS -->
+	<link rel="stylesheet" href="{% static 'responsable/resp.css' %}">
+
+	<title>Madrasa_Tic</title>
+</head>
+<body>
+
+
+	<!-- SIDEBAR -->
+	<section id="sidebar">
+		<a href="#" class="brand">
+			<i class='bx bxs-smile'></i>
+			<span class="text">Madrasa_Tic</span>
+		</a>
+		<ul class="side-menu top">
+			<li class="active">
+				<a href=" {% url 'manage' %}">
+					<i class='bx bxs-dashboard' ></i>
+					<span class="text">Signalement Reçus</span>
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'rapport' %}">
+					<i class='bx bxs-dock-top'></i>
+					<span class="text">Rapport Reçus</span>
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'annonce' %}">
+					<i class='bx bxs-camera'></i>
+					<span class="text">Annouces Reçus</span>
+				</a>
+			</li>
+
+			<li>
+				<a href="{% url 'category_service' %}">
+					<i class='bx bx-table'></i>
+					<span class="text">Tables</span>
+				</a>
+			</li>
+
+             <li>
+				<a href="{% url 'archive' %}">
+					<i class='bx bxs-archive-in'></i>
+					<span class="text">Archive</span>
+				</a>
+			</li>
+                 <li>
+				<a href="{% url 'statistic' %}">
+					<i class='bx bx-line-chart'></i>
+					<span class="text">Statistique</span>
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'categorie' %}">
+					<i class='bx bx-home'></i>
+					<span class="text">Home</span>
+				</a>
+			</li>
+
+
+
+		</ul>
+		<ul class="side-menu">
+
+			<li>
+				<a href="{% url 'logout' %}" class="logout">
+					<i class='bx bxs-log-out-circle' ></i>
+					<span class="text">Logout</span>
+				</a>
+			</li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+
+
+
+	<!-- CONTENT -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu' ></i>
+
+			<form method="post">{% csrf_token %}
+				<div class="form-input">
+					<input type="search" placeholder="Rechercher ici..." name="search">
+					<button type="submit" class="search-btn" name="rech" value="0"><i class='bx bx-search' ></i></button>
+				</div>
+			</form>
+			<input type="checkbox" id="switch-mode" hidden>
+			<label for="switch-mode" class="switch-mode"></label>
+
+    <div class="icon" id="bell"> <img src="https://www.citypng.com/public/uploads/preview/-11594729379yqc5ztoiwy.png" alt=""> </div>
+    <div class="notifications" id="box">
+
+
+
+        <h2>Notifications - <span></span></h2>
+    {% if notification %}
+    {% for noti in notification %}
+
+        <div class="notifications-item" >
+        {% if noti.sig.image %}
+            <img src="{{ noti.sig.image.url }}" alt="img">
+            {% endif %}
+            <div class="text">
+                <h4>{{ noti.sig.titre}}</h4>
+                <p>{{ noti.message }}</p>
+            </div>
+        </div>
+
+
+        {% endfor %}
+    {% endif %}
+
+    </div>
+			<a href="{% url 'profile' %}" class="profile" >
+					<i class='bx bxs-user' ></i>
+			</a>
+		</nav>
+		<!-- NAVBAR -->
+
+		<!-- MAIN -->
+		<main>
+			<div class="head-title">
+
+				<div class="left">
+					<h1>Dashboard</h1>
+					<ul class="breadcrumb">
+						<li>
+							<a href="#">Dashboard</a>
+						</li>
+						<li><i class='bx bx-chevron-right' ></i></li>
+						<li>
+							<a class="active" href="#">Accueil</a>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+
+
+   {% if messages %}
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}" role="alert">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
+			<div class="table-data">
+				<div class="order">
+
+					<div class="head">
+						<h3>Signalements archivé</h3>
+
+
+					</div>
+					<table>
+						<thead>
+							<tr>
+								<th>utilisateur</th>
+                                <th>Titre</th>
+								<th>Date</th>
+								<th>Status</th>
+							   <th></th>
+
+							</tr>
+						</thead>
+						<tbody>
+                        {% if declarations %}
+                        {% for declaration in declarations %}
+							<tr>
+
+								<td>
+                                    {% if declaration.image %}
+									<img src="{{ declaration.image.url }}">
+                                    {% endif %}
+									<p>{{ declaration.user.username }}</p>
+								</td>
+                            <td>{{ declaration.titre }}</td>
+								<td>{{ declaration.date }}</td>
+								<td><span class="status {{ declaration.statut }}">{{ declaration.statut }}</span></td>
+
+								<td>
+
+                                    <button class="btn"><a href="{% url 'content_archive' id=declaration.pk %}">Voir</a></button>
+
+                                </td>
+
+							</tr>
+                        {% endfor %}
+                        {% endif %}
+
+
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+		</main>
+		<!-- MAIN -->
+	</section>
+	<!-- CONTENT -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+
+
+
+
+        var down = false;
+
+        $('#bell').click(function(e){
+
+            var color = $(this).text();
+            if(down){
+
+                $('#box').css('height','0px');
+                $('#box').css('opacity','0');
+                down = false;
+            }else{
+
+                $('#box').css('height','auto');
+                $('#box').css('opacity','1');
+                down = true;
+
+            }
+
+        });
+
+            });
+</script>
+
+
+	<script src="{% static 'responsable/script.js' %}"></script>
+
+</body>
+</html>

@@ -2,9 +2,16 @@ import datetime
 from datetime import date
 
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+from django.template.defaultfilters import slugify
+from autoslug import  AutoSlugField
 from users.models import Users, Service
-
+from django.utils.text import slugify
+from django.db.models.signals import post_delete, pre_save
 import os
+
+
 
 
 def filepath(request, filename):
@@ -18,10 +25,12 @@ def filepath(request, filename):
 class Catégorie(models.Model):
     name = models.CharField(max_length=50, default="None", unique=True)
     image = models.ImageField(null=False, blank=True, upload_to=filepath)
-    description = models.TextField(max_length=30, default="none")
+    description = models.TextField(max_length=20, default="none")
+    service = models.ForeignKey(Service, on_delete=models.RESTRICT, default=1)
 
     def __str__(self):
         return self.name
+
 
 
 class Signaux(models.Model):
@@ -38,28 +47,36 @@ class Signaux(models.Model):
     salle = models.CharField(max_length=100, default="None", null=False)
     date = models.DateField(null=False)
     heure = models.TimeField(null=False)
-    description = models.TextField(max_length=200, default="None", null=False)
+    description = models.TextField(max_length=500, default="None", null=False)
     send = models.BooleanField(default=False)
     validate = models.BooleanField(default=False)
     statut = models.CharField(max_length=50, default="Non_traité",choices=STATUS)
     complement = models.CharField(null=True, default="anything", max_length=200)
     service = models.ForeignKey(Service, on_delete=models.CASCADE, default=1)
     image = models.ImageField(null=False, blank=True, upload_to=filepath)
+    rapport_ajouter = models.BooleanField(default=False)
+   # slug = models.SlugField(blank=True, unique=True)
 
     @property
     def sent(self):
         if self.send:
             return True
 
+    @property
+    def rapportajouter(self):
+        if self.rapport_ajouter:
+            return True
+
     def __str__(self):
         return self.titre
+
 
 
 class Annonce(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
     titre = models.CharField(max_length=50, null=False, default="anything")
     image = models.ImageField(null=False, blank=True, upload_to=filepath)
-    description = models.TextField(max_length=200)
+    description = models.TextField()
     date_debut = models.DateField(null=False)
     date_fin = models.DateField(null=False)
     validate = models.BooleanField(default=False)
@@ -86,4 +103,24 @@ class Notifications(models.Model):
     has_seen=models.BooleanField(default=False)
     sig = models.ForeignKey(Signaux,  on_delete=models.CASCADE, null=True)
 
+
+class Signaux_archivé(models.Model):
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, default=1)
+    titre = models.CharField(max_length=50, default="none", null=False)
+    category = models.ForeignKey(Catégorie, on_delete=models.CASCADE, default=1)
+    lieu = models.CharField(max_length=100, default="None", null=False)
+    salle = models.CharField(max_length=100, default="None", null=False)
+    date = models.DateField(null=False)
+    heure = models.TimeField(null=False)
+    description = models.TextField(max_length=500, default="None", null=False)
+    send = models.BooleanField(default=False)
+    validate = models.BooleanField(default=False)
+    statut = models.CharField(max_length=50, default="Non_traité")
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, default=1)
+    image = models.ImageField(null=False, blank=True, upload_to=filepath)
+
+
+
+    def __str__(self):
+        return self.titre
 

@@ -34,6 +34,7 @@ def service(request):
     if 'user_id' in request.session:
         user = get_user(request).role.service.name
         sig = Signaux.objects.filter(validate=True).filter(service__name=user)
+        rapport=Rapport.objects.all()
         order_count = sig.count()
 
         myFilter = OrderFilter(request.GET, queryset=sig)
@@ -45,12 +46,14 @@ def service(request):
             'sig': sig,
             'user':user,
             'myFilter': myFilter,
-            'order_count': order_count
+            'order_count': order_count,
+            'rapport':rapport
         }
         return render(request, 'services/service.html', context)
 
 @login_required
 def add_rapport(request, id):
+    sig=Signaux.objects.get(pk=id)
     if request.method == "POST":
 
         Titre = request.POST.get("titre")
@@ -75,12 +78,15 @@ def add_rapport(request, id):
                 user = get_user(request).pk
 
             rapport = Rapport(user_id=user, title=Titre, description=Description, date=Date, signalement_id=id,
-                              send=True)
+                              send=True,status='En_cours')
+
 
             if len(request.FILES) != 0:
                 rapport.image = request.FILES['image']
             messages.success(request, "votre rapport est validé")
             rapport.save()
+            sig.rapport_ajouter = True
+            sig.save()
             return redirect('rapport_service')
 
     return render(request, 'services/add_rapport.html')
@@ -97,13 +103,8 @@ def view_rapport(request, id):
         description = request.POST.get("description")
         date = request.POST.get("date")
         save = request.POST.get('save')
-        delete = request.POST.get('delete')
         valider = request.POST.get('valider')
 
-        if (delete):
-            rapport.delete()
-            messages.add_message(request, messages.ERROR, "rapport est supprimé")
-            return redirect('rapport_service')
         if (save):
             rapport.title = titre
             if len(date) != 0:
@@ -120,6 +121,7 @@ def view_rapport(request, id):
 
             rapport.description = description
             rapport.send=True
+            rapport.status='En_cours'
             rapport.save()
             messages.add_message(request, messages.SUCCESS, "rapport envoyer")
             return redirect('rapport_service')
@@ -138,19 +140,7 @@ def signal_content(request, id):
         'signal': signal,
         'rapport': rapport,
     }
-    if request.method == 'POST':
-        valider = request.POST.get('valider')
-        rejeter = request.POST.get('rejeter')
-        if valider:
-            signal.statut = 'Traité'
-            signal.save()
-            messages.add_message(request, messages.SUCCESS, 'signalement traité')
-            return redirect('services')
-        if rejeter:
-            signal.validate=False
-            signal.save()
-            messages.add_message(request, messages.WARNING, 'signalement rejeté')
-            return redirect('services')
+
 
 
     return render(request, 'services/signal.html', context)

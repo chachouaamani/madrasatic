@@ -26,12 +26,7 @@
             {% endif %}
 		</a>
 		<ul class="side-menu top">
-			<li class="active">
-				<a href="{% url 'services' %}">
-					<i class='bx bxs-dashboard' ></i>
-					<span class="text">Dashboard</span>
-				</a>
-			</li>
+
 
 			<li>
 				<a href="{% url 'services' %}">
@@ -139,7 +134,7 @@
                                 <th>description</th>
 								<th>Status</th>
 							   <th></th>
-                                <th></th>
+                                <th>rapport ajouter</th>
 
 							</tr>
 						</thead>
@@ -164,11 +159,22 @@
 									<a href="{% url 'signal_data' id=sig.pk %}"> <button class="btn_add">voir</button></a>
 
 								</td>
-								<td>
 
-									<a href="{% url 'add_rapport' id=sig.pk %}"> <button class="btn_add"><i class="fas fa-plus ">Ajouter rapport</i></button></a>
+                                {% if sig.rapportajouter %}
+                            	<td>
+									<i class='bx bxs-check-circle' style="color:green "></i>
 
 								</td>
+                            {% endif %}
+
+                            {% if not sig.rapportajouter %}
+
+                            	<td>
+									<i class='bx bxs-x-circle' style="color: red"></i>
+								</td>
+                            {% endif %}
+
+
 
 							</tr>
                         {% endfor %}

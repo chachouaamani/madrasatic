@@ -2,12 +2,6 @@ from django.urls import path
 from . import views
 
 from rest_framework import routers
-from .views import CatégorieViewSet , AnnonceViewSet, SignauxViewSet
-
-router = routers.DefaultRouter()
-router.register('Catégorie',CatégorieViewSet)
-router.register('Annonce',AnnonceViewSet)
-router.register('Signaux',SignauxViewSet)
 
 
 urlpatterns = [
@@ -23,7 +17,8 @@ path('add_announcement/',views.add_announcement,name="add_announcement") ,
 path('signal_historique/<int:id>',views.signal_historique,name="signal_historique"),
 path('annonce_historique/<int:id>',views.annonce_historique,name="annonce_historique"),
 
-
+path('mortada/',views.signaux_list),
+path('mortada/<int:id>',views.signaux_detail)
 
 
 ]

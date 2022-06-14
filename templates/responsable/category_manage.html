@@ -43,6 +43,22 @@
              <label>Description</label>
              <textarea class="textarea" name="description" required value="">{{ category.description }}</textarea >
           </div>
+                <div class="inputfield">
+          <label>Service</label>
+          <div class="custom_select">
+
+            <select name="selected_service">
+                {% if ser %}
+
+                 <option value="{{ category.service.id }}">{{ category.service.name }}</option>
+                    {% for ser in ser %}
+                    <option value="{{ ser.id }}" required>{{ ser.name }}</option>
+
+                {% endfor %}
+            {% endif %}
+            </select>
+          </div>
+       </div>
 
         <div class="inputfield">
 

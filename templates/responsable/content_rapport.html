@@ -21,24 +21,20 @@
 
 <!-- header section starts  -->
 
-
-<!-- header section ends -->
-
 <div class="container">
     <div class="main-body">
-
-    <form method="post">{% csrf_token %}
-
+ <form method="post">{% csrf_token %}
 
           <div class="row gutters-sm">
-              {% if rapport  %}
-              {% if rapport.image %}
+              {% if rapport %}
+
+              {% if rapport.signalement.image %}
 
             <div class="col-md-4 mb-3">
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex flex-column align-items-center text-center">
-                    <img src="{{ rapport.image.url }}" alt="Admin" class="rounded" width="100%">
+                    <img src="{{ rapport.signalement.image.url }}" alt="Admin" class="rounded" width="100%">
 
                   </div>
                 </div>
@@ -53,9 +49,18 @@
             <div class="col-md-8">
               <div class="card mb-3">
                 <div class="card-body">
-                <div class="row">
+                  <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Titre de signalement</h6>
+                      <h6 class="mb-0">Username</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ rapport.signalement.user.username }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Titre</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
                       {{ rapport.signalement.titre }}
@@ -63,6 +68,65 @@
                   </div>
                   <hr>
                   <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Discription</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ rapport.signalement.description }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Catégorie</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ rapport.signalement.category.name }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Lieu</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ srapport.signalement.lieu }}<br>{{ rapport.signalement.salle }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Date et heure</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ rapport.signalement.date }}  {{ rapport.signalement.heure }}
+                    </div>
+                  </div>
+                  <hr>
+
+
+                </div>
+              </div>
+
+
+
+
+
+            </div>
+
+
+
+             <div class="col-md-8">
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0" style="font-size: 2rem;">RAPPORT</h6>
+                    </div>
+
+                  </div>
+                  <hr>
+                 <div class="row">
                     <div class="col-sm-3">
                       <h6 class="mb-0">Service</h6>
                     </div>
@@ -73,7 +137,7 @@
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <h6 class="mb-0">Titre de rapport</h6>
+                      <h6 class="mb-0">Titre</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
                       {{ rapport.title }}
@@ -99,56 +163,42 @@
                     </div>
                   </div>
                   <hr>
+                    {% if rapport.image %}
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <img src="{{ rapport.image.url }}" class="mb-0 rapport">
+                    </div>
 
 
+                  </div>
+                    {% endif %}
+
+                  </div>
                 </div>
               </div>
 
 
 
-            </div>
 
 
-
-               <div class="row">
+ <div class="row">
                     <div class="col-sm-12">
                       <button  name="rejeter" value="0" class="btn btn-info " >Rejeter</button>
-                     <button class="btn btn-info " name="delete" value="0">Supprimer</button>
-
-
                         <button class="btn btn-info " name="valider" value="0">Valider</button>
                     </div>
                   </div>
 
 
 
+
+          {% endif %}
+
             </div>
-    {% endif %}
     </form>
           </div>
 
-
         </div>
     </div>
-
-
-
-<!-- footer section ends -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

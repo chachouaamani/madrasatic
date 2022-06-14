@@ -17,26 +17,15 @@ from django.conf import settings
 from rest_framework import viewsets
 
 from .models import Service , Role , Users
-from .serializers import ServiceSerializer , RoleSerializer , UsersSerializer
+
 
 from django.contrib.auth import logout as auth_logout
 
 
 # Create your views here.
 
-class ServiceViewSet (viewsets.ModelViewSet):
-    queryset = Service.objects.all()
-    serializer_class = ServiceSerializer
 
 
-class RoleViewSet(viewsets.ModelViewSet):
-    queryset = Role.objects.all()
-    serializer_class = RoleSerializer
-
-
-class UsersViewSet(viewsets.ModelViewSet):
-        queryset = Users.objects.all()
-        serializer_class = UsersSerializer
 
 
 def get_user(request):
@@ -141,11 +130,7 @@ def signin_signup(request):
                         if user.role.name == "responsable":
                             return redirect(reverse('manage'))
 
-<<<<<<< HEAD
-                        if user.role.name=='service':
-=======
-                        if user.role.name =='service':
->>>>>>> 7b8810df75fae719f15304404baba27f30a85c1e
+                        if user.role.name.__contains__('service'):
                             return redirect('services')
                         if user.role.name == "administration" or user.role.name == "club":
                             return redirect(reverse('administration'))

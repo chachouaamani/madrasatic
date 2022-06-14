@@ -3,12 +3,9 @@ from . import views
 from .views import CompleteResetPassword, RequestPasswordResetEmail
 
 from rest_framework import routers
-from .views import ServiceViewSet , RoleViewSet,UsersViewSet
 
-router = routers.DefaultRouter()
-router.register('Service',ServiceViewSet)
-router.register('Role',RoleViewSet)
-router.register('Users',UsersViewSet)
+
+
 
 urlpatterns = [
     path('signin/', views.signin_signup, name="signin&signup"),

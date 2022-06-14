@@ -173,10 +173,8 @@
                   </div>
                    <div class="row">
                     <div class="col-sm-12">
-                        <form method="post">{% csrf_token %}
-                      <button class="btn btn-info" name="valider" value="0">Marquer comme terminer</button>
-                            <button class="btn btn-info" name="rejeter" value="0">Rejeter signalement</button>
-                        </form>
+                    	  <a class="btn btn-info "  href="{% url 'add_rapport' id=signal.pk %}">Ajouter rapport</a>
+
                     </div>
                   </div>
 

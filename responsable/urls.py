@@ -15,5 +15,8 @@ path('category_service/', views.category_table, name="category_service"),
 path('add_service/', views.add_service, name="add_service"),
 path('add_category/', views.add_category, name="add_category"),
 path('statistique/', views.test, name="statistic"),
+path('content_archive/<int:id>', views.content_signal_archivé, name="content_archive"),
+path('archive/', views.archive, name="archive"),
+path('notification/', views.notification, name="notification"),
 
 ]
