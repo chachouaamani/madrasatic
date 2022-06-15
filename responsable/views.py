@@ -8,9 +8,9 @@ from django.urls import reverse
 
 
 from home_user.filters import OrderFilter
-from home_user.models import Signaux, Catégorie, Annonce,Notifications,Signaux_archivé
+from home_user.models import Signaux, Catégorie, Annonce, Notifications, Signaux_archivé, notify
 from users.models import Users, Service
-from services.models import Rapport,Rapport_archivé
+from services.models import Rapport,Rapport_archivé,notifyrapp
 from django.contrib.auth.decorators import login_required
 
 
@@ -20,16 +20,23 @@ def category_table(request):
     category = Catégorie.objects.all().order_by('-pk')
     service = Service.objects.all().order_by('-pk')
 
+    cpt1 = Notifications.objects.filter(to_user__role__name='responsable').count()
+    cpt2 = notify.objects.filter(to_user__role__name='responsable').count()
+    cpt3 = notifyrapp.objects.filter(to_user__role__name='responsable').count()
+    cpt=cpt1+cpt2+cpt3
+
+
     if request.method=='POST':
         search=request.POST.get('search')
         category = Catégorie.objects.filter(name__contains=search) |  Catégorie.objects.filter(description__contains=search)
         service = Service.objects.filter(name__contains=search) | Service.objects.filter(description__contains=search)
 
-    notification = Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).order_by( '-pk')
+
     context = {
         'category': category,
         'service': service,
-        'notification':notification,
+        'cpt':cpt
+
     }
     return render(request, 'responsable/category_table.html', context)
 
@@ -166,10 +173,14 @@ def annonce(request):
     if request.method == 'POST':
         search = request.POST.get('search')
         annonce = Annonce.objects.filter(titre__contains=search)| Annonce.objects.filter(description__contains=search)| Annonce.objects.filter(user__username__contains=search)
-    notification = Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).order_by('-pk')
+    cpt1 = Notifications.objects.filter(to_user__role__name='responsable').count()
+    cpt2 = notify.objects.filter(to_user__role__name='responsable').count()
+    cpt3 = notifyrapp.objects.filter(to_user__role__name='responsable').count()
+    cpt = cpt1 + cpt2 + cpt3
     context = {
         'annonce': annonce,
-        'notification':notification,
+        'cpt':cpt,
+
 
     }
 
@@ -181,18 +192,23 @@ def rapport(request):
     if request.method == 'POST':
         search = request.POST.get('search')
         rapport = Rapport.objects.filter(title__contains=search)| Rapport.objects.filter(description__contains=search)| Rapport.objects.filter(user__username__contains=search)
-    notification = Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).order_by('-pk')
+    cpt1 = Notifications.objects.filter(to_user__role__name='responsable').count()
+    cpt2 = notify.objects.filter(to_user__role__name='responsable').count()
+    cpt3 = notifyrapp.objects.filter(to_user__role__name='responsable').count()
+    cpt = cpt1 + cpt2 + cpt3
     context = {
         'rapport': rapport,
-        'notification':notification,
+        'cpt':cpt
     }
     return render(request, 'responsable/rapport.html', context)
 
 @login_required
 def manage(request):
-    declarations = Signaux.objects.filter(send=True).order_by('-pk')
-    notification=Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).order_by('-pk')
-    cpt = Notifications.objects.filter(to_user__role__name='responsable').filter(has_seen=False).count()
+    declarations = Signaux.objects.filter(send=True).filter(rattacher=False).order_by('-pk')
+    cpt1 = Notifications.objects.filter(to_user__role__name='responsable').count()
+    cpt2 = notify.objects.filter(to_user__role__name='responsable').count()
+    cpt3 = notifyrapp.objects.filter(to_user__role__name='responsable').count()
+    cpt = cpt1 + cpt2 + cpt3
 
 
 
@@ -207,16 +223,22 @@ def manage(request):
         search=request.POST.get('search')
         rech = request.POST.get('rech')
         if rech:
-            declarations = Signaux.objects.filter(send=True).filter(titre__contains=search) | Signaux.objects.filter(
-                send=True).filter(description__contains=search) | Signaux.objects.filter(send=True).filter(
-                lieu__contains=search) | Signaux.objects.filter(send=True).filter(
-                salle__contains=search) | Signaux.objects.filter(send=True).filter(
-                category__name__contains=search) | Signaux.objects.filter(send=True).filter(
+            declarations = Signaux.objects.filter(send=True).filter(rattacher=False).filter(titre__contains=search) | Signaux.objects.filter(
+                send=True).filter(rattacher=False).filter(description__contains=search) | Signaux.objects.filter(send=True).filter(rattacher=False).filter(
+                lieu__contains=search) | Signaux.objects.filter(send=True).filter(rattacher=False).filter(
+                salle__contains=search) | Signaux.objects.filter(send=True).filter(rattacher=False).filter(
+                category__name__contains=search) | Signaux.objects.filter(send=True).filter(rattacher=False).filter(
                 user__username__contains=search)
 
 
+    if request.method == 'POST':
+        rattacher = request.POST.get('rattacher')
 
-
+        if rattacher:
+            id_list=request.POST.getlist('boxes')
+            for x in id_list:
+                if int(x)!=int(rattacher):
+                    Signaux.objects.filter(pk=int(x)).update(rattacher=True, pere=int(rattacher))
 
 
 
@@ -224,7 +246,6 @@ def manage(request):
         'declarations': declarations,
         'myFilter': myFilter,
         'order_count': order_count,
-        'notification':notification,
         'cpt':cpt,
     }
 
@@ -235,8 +256,12 @@ def content_signal(request, id):
     declaration = Signaux.objects.get(pk=id)
     category = Catégorie.objects.all()
     service = Service.objects.all()
+    try:
+        notification = Notifications.objects.get(sig_id=declaration.pk, to_user__role__name='responsable')
+        notification.delete()
 
-
+    except Notifications.DoesNotExist:
+       notification=None
     context = {
         'declaration': declaration,
         'category': category,
@@ -260,6 +285,11 @@ def content_signal(request, id):
             declaration.statut='Traité'
             declaration.save()
             messages.add_message(request, messages.SUCCESS, 'signalement est marqué comme traité')
+            user = Users.objects.get(pk=declaration.user.pk).pk
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'votre signalement est Traité'
+            notification = Notifications(to_user_id=user, from_user_id=resp, message=message, sig_id=declaration.pk)
+            notification.save()
             return redirect(reverse('manage'))
 
         if (archive):
@@ -294,7 +324,12 @@ def content_signal(request, id):
             user = Users.objects.get(pk=declaration.user.pk).pk
             resp = Users.objects.get(role__name='responsable').pk
             message = 'votre signalement est validé'
-            notification = Notifications(to_user_id=user, from_user_id=resp, message=message, sig_id=declaration.pk)
+            notificationn = Notifications(to_user_id=user, from_user_id=resp, message=message, sig_id=declaration.pk)
+            notificationn.save()
+            userr = Users.objects.get(role__service_id=service_id).pk
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'un nouveau signalement est reçus'
+            notification = Notifications(to_user_id=userr, from_user_id=resp, message=message, sig_id=declaration.pk)
             notification.save()
             return redirect(reverse('manage'))
         if (rejeter):
@@ -312,6 +347,13 @@ def content_signal(request, id):
 @login_required
 def content_rapport(request, id):
     rapport = Rapport.objects.get(pk=id)
+    try:
+        notification = notifyrapp.objects.get(rap_id=rapport.pk, to_user__role__name='responsable')
+        notification.delete()
+
+    except notifyrapp.DoesNotExist:
+        notification = None
+
     context = {
         'rapport': rapport,
 
@@ -327,11 +369,23 @@ def content_rapport(request, id):
             rapport.status='Traité'
             rapport.save()
             messages.add_message(request, messages.SUCCESS, 'rapport est validé')
+            user = Users.objects.get(pk=rapport.user.pk).pk
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'votre rapport est validé'
+            notification = Notifications(to_user_id=user, from_user_id=resp, message=message, sig_id=rapport.signalement.pk)
+            notification.save()
             return redirect(reverse('rapport'))
         if (rejeter):
             rapport.status = "Rejeté"
             rapport.save()
             messages.add_message(request, messages.WARNING, 'rapport est rejeté')
+            user = Users.objects.get(pk=rapport.user.pk).pk
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'votre rapport est rejeté'
+            notification = Notifications(to_user_id=user, from_user_id=resp, message=message,
+                                         sig_id=rapport.signalement.pk)
+            notification.save()
+
             return redirect(reverse('rapport'))
 
     return render(request, 'responsable/content_rapport.html', context)
@@ -339,6 +393,12 @@ def content_rapport(request, id):
 @login_required
 def content_annonce(request, id):
     annonce = Annonce.objects.get(pk=id)
+    try:
+        notification = notify.objects.get(an_id=annonce.pk, to_user__role__name='responsable')
+        notification.delete()
+
+    except notify.DoesNotExist:
+        notification = None
 
     context = {
         'annonce': annonce,
@@ -355,17 +415,38 @@ def content_annonce(request, id):
             annonce.status='Traité'
             annonce.save()
             messages.add_message(request, messages.SUCCESS, 'annonce est validé')
+            user = Users.objects.get(pk=annonce.user.pk).pk
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'votre annonce est validé'
+            notification = notify(to_user_id=user, from_user_id=resp, message=message,
+                                         sig_id=rapport.signalement.pk)
+            notification.save()
+
+
+
             return redirect(reverse('annonce'))
         if (rejeter):
             annonce.status = "Rejeté"
             annonce.save()
             messages.add_message(request, messages.WARNING, 'annonce est rejeté')
+            user = Users.objects.get(pk=annonce.user.pk).pk
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'votre annonce est rejeté'
+            notification = notify(to_user_id=user, from_user_id=resp, message=message,
+                                  sig_id=rapport.signalement.pk)
+            notification.save()
             return redirect(reverse('annonce'))
 
     return render(request, 'responsable/content_annonce.html', context)
 
 @login_required
 def test(request):
+    #les notification
+    cpt1 = Notifications.objects.filter(to_user__role__name='responsable').count()
+    cpt2 = notify.objects.filter(to_user__role__name='responsable').count()
+    cpt3 = notifyrapp.objects.filter(to_user__role__name='responsable').count()
+    cpt = cpt1 + cpt2 + cpt3
+    #####
     sj = Signaux.objects.filter(date__month=1).count()
     sf = Signaux.objects.filter(date__month=2).count()
     sa = Signaux.objects.filter(date__month=4).count()
@@ -394,6 +475,9 @@ def test(request):
         'sj': sj, 'sf': sf, 'sm': sm, 'sa': sa,
         'sigt': sigt,
         'sigtt':sigtt,
+
+        #les notification
+        'cpt':cpt
     }
 
     return render(request, 'responsable/statistic.html', context)
@@ -418,7 +502,10 @@ def content_signal_archivé(request, id):
 @login_required
 def archive(request):
     declarations = Signaux_archivé.objects.all().order_by('-pk')
-
+    cpt1 = Notifications.objects.filter(to_user__role__name='responsable').count()
+    cpt2 = notify.objects.filter(to_user__role__name='responsable').count()
+    cpt3 = notifyrapp.objects.filter(to_user__role__name='responsable').count()
+    cpt = cpt1 + cpt2 + cpt3
 
     if request.method == 'POST':
         search = request.POST.get('search')
@@ -432,10 +519,29 @@ def archive(request):
 
     context = {
         'declarations': declarations,
+        'cpt':cpt
 
     }
 
     return render(request, 'responsable/signal_archive.html', context)
 
 def notification(request):
-    return render(request,'responsable/notification.html')
+
+    notification=Notifications.objects.filter(to_user__role__name='responsable')
+    notifrap=notifyrapp.objects.filter(to_user__role__name='responsable')
+    notifan=notify.objects.filter(to_user__role__name='responsable')
+    cpt1 = Notifications.objects.filter(to_user__role__name='responsable').count()
+    cpt2 = notify.objects.filter(to_user__role__name='responsable').count()
+    cpt3 = notifyrapp.objects.filter(to_user__role__name='responsable').count()
+    cpt = cpt1 + cpt2 + cpt3
+
+
+    context={
+        'notif':notifrap,
+        'noti':notifan,
+        'notification':notification,
+        'cpt':cpt
+    }
+
+    return render(request,'responsable/notification.html',context)
+

@@ -62,5 +62,9 @@ class Rapport_archivé(models.Model):
 
 
 
-
+class notifyrapp(models.Model):
+    to_user=models.ForeignKey(Users,on_delete=models.CASCADE,related_name='touserr',null=True)
+    from_user = models.ForeignKey(Users, on_delete=models.CASCADE,related_name='fromuserr' ,null=True)
+    message = models.TextField(max_length=2000)
+    rap = models.ForeignKey(Rapport,  on_delete=models.CASCADE, null=True)
 

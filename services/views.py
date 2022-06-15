@@ -6,8 +6,8 @@ from django.urls import reverse
 
 from home_user.filters import OrderFilter
 from users.models import Users
-from home_user.models import Signaux
-from .models import Rapport
+from home_user.models import Signaux, Notifications
+from .models import Rapport,notifyrapp
 
 
 def get_user(request):
@@ -22,10 +22,11 @@ def rapport(request):
         if request.method=='POST':
             search=request.POST.get('search')
             rap = Rapport.objects.filter(user_id=user).filter(title__contains=search) | Rapport.objects.filter(user_id=user).filter(description__contains=search)
-
+        cpt = Notifications.objects.filter(to_user_id=user).count() + notifyrapp.objects.filter(to_user_id=user).count()
         context = {
             'rapport': rap,
-            'user':service
+            'user':service,
+            'cpt':cpt
         }
         return render(request, 'services/tab_rap.html', context)
 
@@ -33,6 +34,7 @@ def rapport(request):
 def service(request):
     if 'user_id' in request.session:
         user = get_user(request).role.service.name
+        user_id=get_user(request).pk
         sig = Signaux.objects.filter(validate=True).filter(service__name=user)
         rapport=Rapport.objects.all()
         order_count = sig.count()
@@ -42,12 +44,14 @@ def service(request):
         if request.method == 'POST':
             search = request.POST.get('search')
             sig = Signaux.objects.filter(validate=True).filter(service__name=user).filter(titre__contains=search)|Signaux.objects.filter(validate=True).filter(service__name=user).filter(description__contains=search)|Signaux.objects.filter(validate=True).filter(service__name=user).filter(user__username__contains=search)|Signaux.objects.filter(validate=True).filter(service__name=user).filter(lieu__contains=search)|Signaux.objects.filter(validate=True).filter(service__name=user).filter(salle__contains=search)
+        cpt = Notifications.objects.filter(to_user_id=user_id).count() + notifyrapp.objects.filter(to_user_id=user_id).count()
         context = {
             'sig': sig,
             'user':user,
             'myFilter': myFilter,
             'order_count': order_count,
-            'rapport':rapport
+            'rapport':rapport,
+            'cpt':cpt
         }
         return render(request, 'services/service.html', context)
 
@@ -87,6 +91,11 @@ def add_rapport(request, id):
             rapport.save()
             sig.rapport_ajouter = True
             sig.save()
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'un nouveau rapport est ajouté'
+            notification = notifyrapp(to_user_id=resp, from_user_id=user, message=message,
+                                         rap_id=rapport.pk)
+            notification.save()
             return redirect('rapport_service')
 
     return render(request, 'services/add_rapport.html')
@@ -94,6 +103,9 @@ def add_rapport(request, id):
 @login_required
 def view_rapport(request, id):
     rapport = Rapport.objects.get(pk=id)
+    if 'user_id' in request.session:
+        user = get_user(request).pk
+
     context = {
         'rapport': rapport
     }
@@ -123,6 +135,11 @@ def view_rapport(request, id):
             rapport.send=True
             rapport.status='En_cours'
             rapport.save()
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'un nouveau rapport est ajouté'
+            notification = notifyrapp(to_user_id=resp, from_user_id=user, message=message,
+                                         rap_id=rapport.pk)
+            notification.save()
             messages.add_message(request, messages.SUCCESS, "rapport envoyer")
             return redirect('rapport_service')
 
@@ -131,8 +148,16 @@ def view_rapport(request, id):
 @login_required
 def signal_content(request, id):
     signal = Signaux.objects.get(pk=id)
+    if 'user_id' in request.session:
+        user = get_user(request).pk
     try:
-        rapport = Rapport.objects.get(signalement_id=id)
+        notificationn = Notifications.objects.get(sig_id=signal.pk, to_user=user)
+        notificationn.delete()
+
+    except Notifications.DoesNotExist:
+        notificationn = None
+    try:
+        rapport = Rapport.objects.get(signalement_id=id,status='Traité')
     except Rapport.DoesNotExist:
         rapport = None
 
@@ -148,9 +173,35 @@ def signal_content(request, id):
 @login_required
 def content_rapport(request, id):
     rapport = Rapport.objects.get(pk=id)
+    if 'user_id' in request.session:
+        user = get_user(request).pk
+    try:
+        notificationn = notifyrapp.objects.get(rap_id=rapport.pk, to_user=user)
+        notificationn.delete()
+
+    except notifyrapp.DoesNotExist:
+        notificationn = None
     context = {
         'rapport': rapport,
 
     }
 
     return render(request, 'services/rapport_cont.html', context)
+
+
+def notification(request):
+    if 'user_id' in request.session:
+        user = get_user(request).pk
+
+    notification=Notifications.objects.filter(to_user_id=user)
+    notif = notifyrapp.objects.filter(to_user_id=user)
+    cpt = Notifications.objects.filter(to_user_id=user).count() + notifyrapp.objects.filter(to_user_id=user).count()
+
+
+    context={
+        'notification':notification,
+        'notif':notif,
+        'cpt':cpt
+    }
+
+    return render(request,'services/notification.html',context)

@@ -97,30 +97,12 @@
 			</form>
 			<input type="checkbox" id="switch-mode" hidden>
 			<label for="switch-mode" class="switch-mode"></label>
-		 <div class="icon" id="bell"> <img src="https://www.citypng.com/public/uploads/preview/-11594729379yqc5ztoiwy.png" alt=""> </div>
-    <div class="notifications" id="box">
+            	<a href="{% url 'notification' %}" class="notification">
+				<i class='bx bxs-bell' ></i>
+				<span class="num">{{ cpt }}</span>
+			</a>
 
 
-
-        <h2>Notifications - <span></span></h2>
-    {% if notification %}
-    {% for noti in notification %}
-
-        <div class="notifications-item" >
-        {% if noti.sig.image %}
-            <img src="{{ noti.sig.image.url }}" alt="img">
-            {% endif %}
-            <div class="text">
-                <h4>{{ noti.sig.titre}}</h4>
-                <p>{{ noti.message }}</p>
-            </div>
-        </div>
-
-
-        {% endfor %}
-    {% endif %}
-
-    </div>
 			<a href="{% url 'profile' %}" class="profile">
 					<i class='bx bxs-user' ></i>
 			</a>

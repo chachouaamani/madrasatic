@@ -100,30 +100,11 @@
 			<input type="checkbox" id="switch-mode" hidden>
 			<label for="switch-mode" class="switch-mode"></label>
 
-    <div class="icon" id="bell"> <img src="https://www.citypng.com/public/uploads/preview/-11594729379yqc5ztoiwy.png" alt=""> </div>
-    <div class="notifications" id="box">
 
-
-
-        <h2>Notifications - <span></span></h2>
-    {% if notification %}
-    {% for noti in notification %}
-
-        <div class="notifications-item" >
-        {% if noti.sig.image %}
-            <img src="{{ noti.sig.image.url }}" alt="img">
-            {% endif %}
-            <div class="text">
-                <h4>{{ noti.sig.titre}}</h4>
-                <p>{{ noti.message }}</p>
-            </div>
-        </div>
-
-
-        {% endfor %}
-    {% endif %}
-
-    </div>
+			 	<a href="{% url 'notification' %}" class="notification">
+				<i class='bx bxs-bell' ></i>
+				<span class="num">{{ cpt }}</span>
+			</a>
 			<a href="{% url 'profile' %}" class="profile" >
 					<i class='bx bxs-user' ></i>
 			</a>
@@ -172,6 +153,7 @@
 					<table>
 						<thead>
 							<tr>
+                                <th></th>
 								<th>utilisateur</th>
                                 <th>Titre</th>
 								<th>Date</th>
@@ -181,10 +163,15 @@
 							</tr>
 						</thead>
 						<tbody>
+                        <form method="post">{% csrf_token %}
                         {% if declarations %}
                         {% for declaration in declarations %}
 							<tr>
-
+                            <td>
+                               <div>
+                                    <input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="{{ declaration.pk }}" name="boxes">
+                               </div>
+                            	</td>
 								<td>
                                     {% if declaration.image %}
 									<img src="{{ declaration.image.url }}">
@@ -201,11 +188,16 @@
 
                                 </td>
 
+                            <td>
+
+                                    <button class="btn" name="rattacher" value="{{ declaration.pk }}">Rattacher</button>
+
+                                </td>
+
 							</tr>
                         {% endfor %}
                         {% endif %}
-
-
+                        </form>
 						</tbody>
 					</table>
 				</div>

@@ -35,10 +35,39 @@
         <label for="search-box" class="fas fa-search"></label>
     </form>
 
-    <div class="shopping-cart">
+     <div class="shopping-cart">
+         {% if notification %}
+         {% for noti in notification %}
+          <div class="box">
+              <form method="post"> {% csrf_token %}
+            <button type="submit" name="sup" value="{{ noti.pk }}" ><i class="fas fa-trash"></i></button>
 
+            <div class="content">
+                <h3>{{ noti.sig.titre }}</h3>
+                <span class="quantity">{{ noti.message }}</span>
+            </div>
+     </form>
+        </div>
 
-    </div>
+              {% endfor %}
+     {% endif %}
+
+        {% if notif %}
+         {% for noti in notif %}
+          <div class="box">
+              <form method="post"> {% csrf_token %}
+            <button type="submit" name="sup" value="{{ noti.pk }}" ><i class="fas fa-trash"></i></button>
+
+            <div class="content">
+                <h3>{{ noti.an.titre }}</h3>
+                <span class="quantity">{{ noti.message }}</span>
+            </div>
+     </form>
+        </div>
+
+              {% endfor %}
+     {% endif %}
+     </div>
 
     <div  class="login-form">
         <a href="{% url 'logout' %}"><button value="logout" class="btn_header">logout</button></a>

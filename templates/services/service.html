@@ -77,9 +77,9 @@
 			</form>
 			<input type="checkbox" id="switch-mode" hidden>
 			<label for="switch-mode" class="switch-mode"></label>
-			<a href="#" class="notification">
+			 	<a href="{% url 'notification_service' %}" class="notification">
 				<i class='bx bxs-bell' ></i>
-				<span class="num">8</span>
+				<span class="num">{{ cpt }}</span>
 			</a>
 			<a href="{% url 'profile' %}" class="profile">
 					<i class='bx bxs-user' ></i>

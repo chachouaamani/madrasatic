@@ -8,7 +8,7 @@ from rest_framework import viewsets
 from users.models import Users
 from .filters import OrderFilter
 from .models import Signaux
-from .models import Catégorie,Notifications
+from .models import Catégorie,Notifications,notify
 from services.models import Rapport,Rapport_archivé
 
 from django.contrib import messages
@@ -114,11 +114,25 @@ def report_problem(request):
             signal.save()
             messages.add_message(request, messages.SUCCESS, "votre signalement est enregistrer")
             return redirect('historique')
-
-
+    notification = Notifications.objects.filter(to_user_id=user).order_by('-pk')
+    annot=notify.objects.filter(to_user_id=user).order_by('-pk')
+    if request.method == "POST":
+        sup = request.POST.get('sup')
+        try:
+            notif = Notifications.objects.get(pk=sup)
+            notif.delete()
+        except Notifications.DoesNotExist:
+            notif = None
+        try:
+            notiff = notify.objects.get(pk=sup)
+            notiff.delete()
+        except notify.DoesNotExist:
+            notiff = None
     context={
             'cat': Catégorie.objects.all(),
-            'user':data
+            'user':data,
+             'notification':notification,
+             'notif':annot
 
      }
     return render(request, "home_user/report_problem.html", context)
@@ -129,8 +143,15 @@ def categorie(request):
     if 'user_id' in request.session:
         user_id = get_user(request).pk
         user = Users.objects.get(pk=user_id)
-        notification = Notifications.objects.filter(to_user_id=user_id).filter(has_seen=False).order_by(
-            '-pk')
+        notification = Notifications.objects.filter(to_user_id=user_id).order_by('-pk')
+        if request.method == "POST":
+            sup = request.POST.get('sup')
+            try:
+                notif = Notifications.objects.get(pk=sup)
+                notif.delete()
+            except Notifications.DoesNotExist:
+                notif=None
+
 
     context = {'afficher_annonce': afficher_annonce,
                'categorie': Catégorie.objects.all(),
@@ -154,12 +175,27 @@ def signals(request, id):
     if request.method=='POST':
         search=request.POST.get('search')
         sig=Signaux.objects.filter(category__name=catname).filter(validate=True).filter(titre__contains=search)|Signaux.objects.filter(category__name=catname).filter(validate=True).filter(description__contains=search)|Signaux.objects.filter(category__name=catname).filter(validate=True).filter(user__username__contains=search)|Signaux.objects.filter(category__name=catname).filter(validate=True).filter(lieu__contains=search)|Signaux.objects.filter(category__name=catname).filter(validate=True).filter(salle__contains=search)
-
+    notification = Notifications.objects.filter(to_user_id=user_id).order_by('-pk')
+    annot = notify.objects.filter(to_user_id=user_id).order_by('-pk')
+    if request.method == "POST":
+        sup = request.POST.get('sup')
+        try:
+            notif = Notifications.objects.get(pk=sup)
+            notif.delete()
+        except Notifications.DoesNotExist:
+            notif = None
+        try:
+            notiff = notify.objects.get(pk=sup)
+            notiff.delete()
+        except notify.DoesNotExist:
+            notiff = None
     context = {
         'sig': sig,
         'user':user,
         'myFilter':myFilter,
         'order_count':order_count,
+        'notification':notification,
+        'notif':annot
 
 
     }
@@ -195,22 +231,60 @@ def historique(request):
             salle__contains=search) | Signaux.objects.filter(user_id=user_id).filter(
             lieu__contains=search) | Signaux.objects.filter(user_id=user_id).filter(category__name__contains=search)
         annonce = Annonce.objects.filter(user_id=user_id).filter(titre__contains=search)| Annonce.objects.filter(user_id=user_id).filter(description__contains=search)
+
+    notification = Notifications.objects.filter(to_user_id=user_id).order_by('-pk')
+    annot = notify.objects.filter(to_user_id=user_id).order_by('-pk')
+    if request.method == "POST":
+        sup = request.POST.get('sup')
+        try:
+            notif = Notifications.objects.get(pk=sup)
+            notif.delete()
+        except Notifications.DoesNotExist:
+            notif = None
+        try:
+            notiff = notify.objects.get(pk=sup)
+            notiff.delete()
+        except notify.DoesNotExist:
+            notiff = None
+
     context = {
         'annonce': annonce,
         'sig': sig,
         'user': user,
         'myFilter': myFilter,
-        'order_count': order_count
+        'order_count': order_count,
+        'notification':notification,
+        'notif':annot
     }
 
     return render(request, "home_user/historique.html", context)
 
 @login_required
 def administration_club(request):
+    if 'user_id' in request.session:
+        user_id = get_user(request).pk
     afficher_annonce = Annonce.objects.filter(validate=True)
     categorie = Catégorie.objects.all()
+
+    notification = Notifications.objects.filter(to_user_id=user_id).order_by('-pk')
+    annot = notify.objects.filter(to_user_id=user_id).order_by('-pk')
+    if request.method == "POST":
+        sup = request.POST.get('sup')
+        try:
+            notif = Notifications.objects.get(pk=sup)
+            notif.delete()
+        except Notifications.DoesNotExist:
+            notif = None
+        try:
+            notiff = notify.objects.get(pk=sup)
+            notiff.delete()
+        except notify.DoesNotExist:
+            notiff = None
     context = {'afficher_annonce': afficher_annonce,
-               'categorie': categorie}
+               'categorie': categorie,
+               'notification':notification,
+               'notif':annot
+               }
 
     return render(request, "home_user/administration&club.html", context)
 
@@ -243,7 +317,7 @@ def add_announcement(request):
             messages.add_message(request,messages.SUCCESS, "votre annonce est ajouté")
             resp = Users.objects.get(role__name='responsable').pk
             message = 'une nouvelle annonce est ajoutée'
-            notification = Notifications(to_user_id=resp, from_user_id=user, message=message, sig_id=annonce.pk)
+            notification = notify(to_user_id=resp, from_user_id=user, message=message, an_id=annonce.pk)
             notification.save()
 
             return redirect('historique')
@@ -261,10 +335,29 @@ def add_announcement(request):
             messages.add_message(request, messages.SUCCESS, "votre annonce est enregistré")
 
             return redirect('historique')
+    notification = Notifications.objects.filter(to_user_id=user).order_by('-pk')
+    annot = notify.objects.filter(to_user_id=user).order_by('-pk')
+    if request.method == "POST":
+        sup = request.POST.get('sup')
+        try:
+            notif = Notifications.objects.get(pk=sup)
+            notif.delete()
+        except Notifications.DoesNotExist:
+            notif = None
+        try:
+            notiff = notify.objects.get(pk=sup)
+            notiff.delete()
+        except notify.DoesNotExist:
+            notiff = None
+    context={
+        'user': data,
+        'notification':notification,
+        'notif':annot
+
+    }
 
 
-
-    return render(request, 'home_user/add_announcement.html',{'user':data})
+    return render(request, 'home_user/add_announcement.html',context)
 
 @login_required
 def signal_content(request, id):
@@ -274,14 +367,30 @@ def signal_content(request, id):
         user = Users.objects.get(pk=user_id)
 
     try:
-        rapport = Rapport.objects.get(signalement_id=id)
+        rapport = Rapport.objects.get(signalement_id=id,status='Traité')
     except Rapport.DoesNotExist:
         rapport = None
 
+    notification = Notifications.objects.filter(to_user_id=user_id).order_by('-pk')
+    annot = notify.objects.filter(to_user_id=user_id).order_by('-pk')
+    if request.method == "POST":
+        sup = request.POST.get('sup')
+        try:
+            notif = Notifications.objects.get(pk=sup)
+            notif.delete()
+        except Notifications.DoesNotExist:
+            notif = None
+        try:
+            notiff = notify.objects.get(pk=sup)
+            notiff.delete()
+        except notify.DoesNotExist:
+            notiff = None
     context = {
         'signal': signal,
         'rapport': rapport,
         'user': user,
+        'notification':notification,
+        'notif':annot
     }
     return render(request, 'home_user/signal_content.html', context)
 
@@ -292,9 +401,25 @@ def annonce_content(request, id):
         user_id = get_user(request).pk
         user = Users.objects.get(pk=user_id)
 
+    notification = Notifications.objects.filter(to_user_id=user_id).order_by('-pk')
+    annot = notify.objects.filter(to_user_id=user_id).order_by('-pk')
+    if request.method == "POST":
+        sup = request.POST.get('sup')
+        try:
+            notif = Notifications.objects.get(pk=sup)
+            notif.delete()
+        except Notifications.DoesNotExist:
+            notif = None
+        try:
+            notiff = notify.objects.get(pk=sup)
+            notiff.delete()
+        except notify.DoesNotExist:
+            notiff = None
     context = {
         'annonce': annonce,
-        'user': user
+        'user': user,
+        'notification':notification,
+        'notif':annot
 
     }
     return render(request, 'home_user/annonce_content.html', context)
@@ -302,12 +427,30 @@ def annonce_content(request, id):
 
 @login_required
 def signal_historique(request, id):
+    if 'user_id' in request.session:
+        user_id = get_user(request).pk
     signal = Signaux.objects.get(pk=id)
+    notification = Notifications.objects.filter(to_user_id=user_id).order_by('-pk')
+    annot = notify.objects.filter(to_user_id=user_id).order_by('-pk')
+    if request.method == "POST":
+        sup = request.POST.get('sup')
+        try:
+            notif = Notifications.objects.get(pk=sup)
+            notif.delete()
+        except Notifications.DoesNotExist:
+            notif = None
+        try:
+            notiff = notify.objects.get(pk=sup)
+            notiff.delete()
+        except notify.DoesNotExist:
+            notiff = None
 
 
     context = {
         'signal': signal,
         'cat': Catégorie.objects.all(),
+        'notification':notification,
+        'notif':annot
 
     }
 
@@ -372,10 +515,28 @@ def signal_historique(request, id):
 @login_required
 def annonce_historique(request, id):
     annonce = Annonce.objects.get(pk=id)
+    if 'user_id' in request.session:
+        user_id = get_user(request).pk
+    notification = Notifications.objects.filter(to_user_id=user_id).order_by('-pk')
+    annot = notify.objects.filter(to_user_id=user_id).order_by('-pk')
+    if request.method == "POST":
+        sup = request.POST.get('sup')
+        try:
+            notif = Notifications.objects.get(pk=sup)
+            notif.delete()
+        except Notifications.DoesNotExist:
+            notif = None
+        try:
+            notiff = notify.objects.get(pk=sup)
+            notiff.delete()
+        except notify.DoesNotExist:
+            notiff = None
 
 
     context = {
         'annonce': annonce,
+        'notification':notification,
+        'notif':annot
 
 
     }
@@ -405,6 +566,12 @@ def annonce_historique(request, id):
 
             annonce.save()
             messages.add_message(request, messages.SUCCESS, 'votre annonce est ajouté')
+            if 'user_id' in request.session:
+                user = get_user(request).pk
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'une nouvelle annonce est ajoutée'
+            notification = notify(to_user_id=resp, from_user_id=user, message=message, an_id=annonce.pk)
+            notification.save()
             return redirect('historique')
 
         if save:

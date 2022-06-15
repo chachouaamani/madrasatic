@@ -55,7 +55,9 @@ class Signaux(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE, default=1)
     image = models.ImageField(null=False, blank=True, upload_to=filepath)
     rapport_ajouter = models.BooleanField(default=False)
-   # slug = models.SlugField(blank=True, unique=True)
+    rattacher=models.BooleanField(default=False)
+    pere=models.IntegerField(default=0)
+
 
     @property
     def sent(self):
@@ -97,11 +99,17 @@ class Annonce(models.Model):
         return self.titre
 
 class Notifications(models.Model):
-    to_user=models.ForeignKey(Users,related_name='notification_to',on_delete=models.CASCADE,null=True)
-    from_user = models.ForeignKey(Users, related_name='notification_from', on_delete=models.CASCADE, null=True)
+    to_user=models.ForeignKey(Users,on_delete=models.CASCADE,related_name='to_user',null=True)
+    from_user = models.ForeignKey(Users, on_delete=models.CASCADE,related_name='from_user' ,null=True)
     message = models.TextField(max_length=2000)
-    has_seen=models.BooleanField(default=False)
     sig = models.ForeignKey(Signaux,  on_delete=models.CASCADE, null=True)
+class notify(models.Model):
+    to_user=models.ForeignKey(Users,on_delete=models.CASCADE,related_name='touser',null=True)
+    from_user = models.ForeignKey(Users, on_delete=models.CASCADE,related_name='fromuser' ,null=True)
+    message = models.TextField(max_length=2000)
+    an = models.ForeignKey(Annonce,  on_delete=models.CASCADE, null=True)
+
+
 
 
 class Signaux_archivé(models.Model):

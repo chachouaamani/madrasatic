@@ -124,7 +124,7 @@ def signin_signup(request):
                     if 'user_id' in request.session:
                         user = get_user(request)
 
-                        if user.role.name== "utilisateur":
+                        if user.role.name == "utilisateur" or user.role.name == "admin":
                             return redirect(reverse('categorie'))
 
                         if user.role.name == "responsable":
