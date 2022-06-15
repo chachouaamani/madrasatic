@@ -4,7 +4,6 @@ from django.contrib import admin
 from users.models import Users, Service,Role
 from django.contrib.auth.admin import UserAdmin
 
-admin.site.register(Service)
 admin.site.register(Role)
 
 
