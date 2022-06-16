@@ -169,10 +169,10 @@ def service_manage(request, id):
 
 @login_required
 def annonce(request):
-    annonce = Annonce.objects.all().order_by('-pk')
+    annonce = Annonce.objects.filter(send=True).order_by('-pk')
     if request.method == 'POST':
         search = request.POST.get('search')
-        annonce = Annonce.objects.filter(titre__contains=search)| Annonce.objects.filter(description__contains=search)| Annonce.objects.filter(user__username__contains=search)
+        annonce = Annonce.objects.filter(send=True).filter(titre__contains=search)| Annonce.objects.filter(send=True).filter(description__contains=search)| Annonce.objects.filter(send=True).filter(user__username__contains=search)
     cpt1 = Notifications.objects.filter(to_user__role__name='responsable').count()
     cpt2 = notify.objects.filter(to_user__role__name='responsable').count()
     cpt3 = notifyrapp.objects.filter(to_user__role__name='responsable').count()
@@ -188,10 +188,10 @@ def annonce(request):
 
 @login_required
 def rapport(request):
-    rapport = Rapport.objects.all().order_by('-pk')
+    rapport = Rapport.objects.filter(send=True).order_by('-pk')
     if request.method == 'POST':
         search = request.POST.get('search')
-        rapport = Rapport.objects.filter(title__contains=search)| Rapport.objects.filter(description__contains=search)| Rapport.objects.filter(user__username__contains=search)
+        rapport = Rapport.objects.filter(send=True).filter(title__contains=search)| Rapport.objects.filter(send=True).filter(description__contains=search)| Rapport.objects.filter(send=True).filter(user__username__contains=search)
     cpt1 = Notifications.objects.filter(to_user__role__name='responsable').count()
     cpt2 = notify.objects.filter(to_user__role__name='responsable').count()
     cpt3 = notifyrapp.objects.filter(to_user__role__name='responsable').count()
@@ -419,7 +419,7 @@ def content_annonce(request, id):
             resp = Users.objects.get(role__name='responsable').pk
             message = 'votre annonce est validé'
             notification = notify(to_user_id=user, from_user_id=resp, message=message,
-                                         sig_id=rapport.signalement.pk)
+                                         an_id=annonce.pk)
             notification.save()
 
 
@@ -433,7 +433,7 @@ def content_annonce(request, id):
             resp = Users.objects.get(role__name='responsable').pk
             message = 'votre annonce est rejeté'
             notification = notify(to_user_id=user, from_user_id=resp, message=message,
-                                  sig_id=rapport.signalement.pk)
+                                  an_id=annonce.pk)
             notification.save()
             return redirect(reverse('annonce'))
 
