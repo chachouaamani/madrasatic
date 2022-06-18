@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'services.apps.ServicesConfig',
     'rest_framework',
     'django_filters',
+    'knox',
 
 
 ]
