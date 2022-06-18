@@ -87,7 +87,7 @@ def add_rapport(request, id):
 
             if len(request.FILES) != 0:
                 rapport.image = request.FILES['image']
-            messages.success(request, "votre rapport est validé")
+            messages.success(request, "votre rapport est envoyé")
             rapport.save()
             sig.rapport_ajouter = True
             sig.save()
@@ -103,6 +103,8 @@ def add_rapport(request, id):
 @login_required
 def view_rapport(request, id):
     rapport = Rapport.objects.get(pk=id)
+    sig_id=rapport.signalement_id
+    sig=Signaux.objects.get(pk=sig_id)
     if 'user_id' in request.session:
         user = get_user(request).pk
 
@@ -135,6 +137,8 @@ def view_rapport(request, id):
             rapport.send=True
             rapport.status='En_cours'
             rapport.save()
+            sig.rapport_ajouter=True
+            sig.save()
             resp = Users.objects.get(role__name='responsable').pk
             message = 'un nouveau rapport est ajouté'
             notification = notifyrapp(to_user_id=resp, from_user_id=user, message=message,

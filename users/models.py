@@ -26,7 +26,7 @@ class Service(models.Model):
 
 
 class Role(models.Model):
-    name = models.CharField(max_length=50, null=False, default="utilisateur")
+    name = models.CharField(max_length=50, null=False, default="utilisateur",unique=True)
     service = models.ForeignKey(Service, on_delete=models.RESTRICT, default=1)
 
     def __str__(self):

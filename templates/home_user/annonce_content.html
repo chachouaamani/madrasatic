@@ -28,12 +28,12 @@
     <nav class="navbar">
         {% if user.is_admin %}
         <a href="{% url 'administration' %}">accueil</a>
-        <a href="{% url 'administration' %}#features">catégories</a>
+        <a href="{% url 'administration' %}#features">Signalements</a>
         <a href="{% url 'administration' %}#review">annonces</a>
         <a href="{% url 'historique' %}">historique</a>
         {% else %}
         <a href="{% url 'categorie' %}">accueil</a>
-        <a href="{% url 'categorie' %}#features">catégories</a>
+        <a href="{% url 'categorie' %}#features">Signalements</a>
         <a href="{% url 'categorie' %}#review">annonces</a>
         <a href="{% url 'historique' %}">historique</a>
         {% endif %}

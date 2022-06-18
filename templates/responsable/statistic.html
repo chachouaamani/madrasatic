@@ -52,7 +52,13 @@
 			<li>
 				<a href="{% url 'category_service' %}">
 					<i class='bx bx-table'></i>
-					<span class="text">Tables</span>
+					<span class="text">Gestion des catégories</span>
+				</a>
+			</li>
+            <li>
+				<a href="{% url 'service_table' %}">
+					<i class='bx bx-table'></i>
+					<span class="text">Gestion des services</span>
 				</a>
 			</li>
 
@@ -127,8 +133,14 @@
                 {% endfor %}
                 ],
                 datasets: [{
-                    label: '# of Votes',
-                    data: [{{ sigt }},{{ sigtt }}, 0],
+                    label: 'Graph mesurant la durée du traitement dans chaque catégorie',
+
+                    data: [
+                        {% for sig in sigs%}
+    {{ sig }},
+    {% endfor %}
+
+                        , 0],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -165,15 +177,21 @@
             'April',
             'May',
             'June',
+            'juillet',
+            'aout',
+            'septembre',
+            'octobre',
+            'novembre',
+            'decembre',
         ];
 
         const data = {
             labels: labels,
             datasets: [{
-                label: 'My First dataset',
+                label: "Graph mesurant les signalement reçus pendant l'année",
                 backgroundColor: 'rgb(99,112,255)',
                 borderColor: 'rgb(116,126,243)',
-                data: [{{ sj }}, {{ sf }}, {{ sa }}, {{ sm }}],
+                data: [{{ sj }}, {{ sf }},{{ sms }}, {{ sa }}, {{ sm }},{{ sju }},{{ sjj }},{{ sout }},{{ ssp }},{{ soc }},{{ snv }},{{ sdc }}],
             }]
         };
 
@@ -197,11 +215,17 @@
             ],
             datasets: [{
                 label: 'My First Dataset',
-                data: [{{ si }}, {{ signa }}, 3],
+                data: [{% for list in liste %}
+                    {{ list }},
+                    {% endfor %}],
                 backgroundColor: [
                     'rgb(255, 99, 132)',
                     'rgb(54, 162, 235)',
                     'rgb(255, 205, 86)',
+                    'rgb(207,255,86)',
+                    'rgb(255,86,207)',
+                    'rgb(86,89,255)',
+
                 ],
                 hoverOffset: 4
             }]
@@ -226,6 +250,9 @@
 </div>
 <canvas id="myChart1" width="20" height="4"></canvas>
 <canvas id="myChart2" width="20" height="4" ></canvas>
+                   {% for sig in sigs %}
+    {{ sig }}
+    {% endfor %}
     </section>
 <script src="{% static 'responsable/script.js' %}"></script>
 </body>

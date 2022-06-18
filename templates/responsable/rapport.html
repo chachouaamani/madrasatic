@@ -45,7 +45,13 @@
 			<li>
 				<a href="{% url 'category_service' %}">
 					<i class='bx bx-table'></i>
-					<span class="text">Tables</span>
+					<span class="text">Gestion des catégories</span>
+				</a>
+			</li>
+            <li>
+				<a href="{% url 'service_table' %}">
+					<i class='bx bx-table'></i>
+					<span class="text">Gestion des services</span>
 				</a>
 			</li>
                <li>
@@ -165,6 +171,8 @@
 								<td>{{ rapport.date }}</td>
 								<td><span class="status {{ rapport.status }}">{{ rapport.status }}</span></td>
 								<td><button class="btn"><a href="{% url 'content_rapport' id=rapport.pk %}">Gérer</a></button></td>
+
+
 							</tr>
                         {% endfor %}
                         {% endif %}

@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def category_table(request):
     category = Catégorie.objects.all().order_by('-pk')
-    service = Service.objects.all().order_by('-pk')
+
 
     cpt1 = Notifications.objects.filter(to_user__role__name='responsable').count()
     cpt2 = notify.objects.filter(to_user__role__name='responsable').count()
@@ -29,16 +29,41 @@ def category_table(request):
     if request.method=='POST':
         search=request.POST.get('search')
         category = Catégorie.objects.filter(name__contains=search) |  Catégorie.objects.filter(description__contains=search)
-        service = Service.objects.filter(name__contains=search) | Service.objects.filter(description__contains=search)
+
 
 
     context = {
         'category': category,
-        'service': service,
         'cpt':cpt
 
     }
     return render(request, 'responsable/category_table.html', context)
+
+
+@login_required
+def service_table(request):
+
+    service = Service.objects.all().order_by('-pk')
+
+    cpt1 = Notifications.objects.filter(to_user__role__name='responsable').count()
+    cpt2 = notify.objects.filter(to_user__role__name='responsable').count()
+    cpt3 = notifyrapp.objects.filter(to_user__role__name='responsable').count()
+    cpt=cpt1+cpt2+cpt3
+
+
+    if request.method=='POST':
+        search=request.POST.get('search')
+
+        service = Service.objects.filter(name__contains=search) | Service.objects.filter(description__contains=search)
+
+
+    context = {
+
+        'service': service,
+        'cpt':cpt
+
+    }
+    return render(request, 'responsable/service_table.html', context)
 
 @login_required
 def add_category(request):
@@ -123,12 +148,12 @@ def add_service(request):
                 service = Service(name=name, description=description)
                 service.save()
                 messages.add_message(request, messages.SUCCESS, "service est ajouter")
-                return redirect('category_service')
+                return redirect('service_table')
             else:
                 messages.add_message(request, messages.WARNING, "service est déjà exister!")
-                return redirect('category_service')
+                return redirect('service_table')
         if (cancel):
-            return redirect('category_service')
+            return redirect('service_table')
 
     return render(request, 'responsable/add_service.html')
 
@@ -150,10 +175,10 @@ def service_manage(request, id):
             try :
                 service.delete()
                 messages.add_message(request, messages.ERROR, "service est supprimé")
-                return redirect('category_service')
+                return redirect('service_table')
             except RestrictedError:
                 messages.add_message(request, messages.ERROR, "Vous pouvez pas supprimé ce service")
-                return redirect('category_service')
+                return redirect('service_table')
 
 
         if (save):
@@ -161,9 +186,9 @@ def service_manage(request, id):
             service.description = description
             service.save()
             messages.add_message(request, messages.SUCCESS, "modification sauvgardé")
-            return redirect('category_service')
+            return redirect('service_table')
         if (cancel):
-            return redirect('category_service')
+            return redirect('service_table')
 
     return render(request, 'responsable/service_manage.html',context)
 
@@ -189,6 +214,7 @@ def annonce(request):
 @login_required
 def rapport(request):
     rapport = Rapport.objects.filter(send=True).order_by('-pk')
+
     if request.method == 'POST':
         search = request.POST.get('search')
         rapport = Rapport.objects.filter(send=True).filter(title__contains=search)| Rapport.objects.filter(send=True).filter(description__contains=search)| Rapport.objects.filter(send=True).filter(user__username__contains=search)
@@ -241,7 +267,6 @@ def manage(request):
                     Signaux.objects.filter(pk=int(x)).update(rattacher=True, pere=int(rattacher))
 
 
-
     context = {
         'declarations': declarations,
         'myFilter': myFilter,
@@ -255,7 +280,7 @@ def manage(request):
 def content_signal(request, id):
     declaration = Signaux.objects.get(pk=id)
     category = Catégorie.objects.all()
-    service = Service.objects.all()
+
     try:
         notification = Notifications.objects.get(sig_id=declaration.pk, to_user__role__name='responsable')
         notification.delete()
@@ -265,36 +290,26 @@ def content_signal(request, id):
     context = {
         'declaration': declaration,
         'category': category,
-        'service': service,
+
 
     }
 
     if request.method == "POST":
         categorie_id = request.POST.get("selected_categorie")
-        service_id = request.POST.get("selected_service")
         archive = request.POST.get("archiver")
         rejeter = request.POST.get('rejeter')
         valider = request.POST.get('valider')
         save = request.POST.get('save')
-        termine = request.POST.get('termine')
+
 
         if (save):
             declaration.category_id = categorie_id
             declaration.save()
-        if (termine):
-            declaration.statut='Traité'
-            declaration.save()
-            messages.add_message(request, messages.SUCCESS, 'signalement est marqué comme traité')
-            user = Users.objects.get(pk=declaration.user.pk).pk
-            resp = Users.objects.get(role__name='responsable').pk
-            message = 'votre signalement est Traité'
-            notification = Notifications(to_user_id=user, from_user_id=resp, message=message, sig_id=declaration.pk)
-            notification.save()
-            return redirect(reverse('manage'))
+
 
         if (archive):
             declaration_archivé=Signaux_archivé(user_id=declaration.user_id, titre=declaration.titre, category_id=declaration.category_id, salle=declaration.salle, lieu=declaration.lieu, date=declaration.date,
-                             heure=declaration.heure, send=declaration.send, description=declaration.description,image=declaration.image,statut=declaration.statut,validate=declaration.validate,service_id=declaration.service_id)
+                             heure=declaration.heure, send=declaration.send, description=declaration.description,image=declaration.image,statut=declaration.statut,validate=declaration.validate,service_id=declaration.service_id,rapport_ajouter=declaration.rapport_ajouter,pere=declaration.pere,rattacher=declaration.rattacher)
             declaration_archivé.save()
             try:
                 rapport = Rapport.objects.get(signalement_id=declaration.pk)
@@ -306,7 +321,6 @@ def content_signal(request, id):
                 return redirect(reverse('manage'))
 
             except Rapport.DoesNotExist as e:
-                rapport_archivé.save()
                 declaration.delete()
                 messages.add_message(request, messages.INFO, 'signalement est archivé')
                 return redirect(reverse('manage'))
@@ -316,7 +330,8 @@ def content_signal(request, id):
 
 
         if (valider):
-            declaration.service_id = service_id
+            service_id=Catégorie.objects.get(pk=categorie_id).service_id
+            declaration.service_id=service_id
             declaration.validate = True
             declaration.statut='En_cours'
             declaration.save()
@@ -365,6 +380,15 @@ def content_rapport(request, id):
         valider = request.POST.get('valider')
 
         if (valider):
+            declaration=Signaux.objects.get(pk=rapport.signalement_id)
+            declaration.statut="Traité"
+            declaration.save()
+            user = Users.objects.get(pk=rapport.signalement.user_id).pk
+            resp = Users.objects.get(role__name='responsable').pk
+            message = 'votre signalement est traité'
+            notification = Notifications(to_user_id=user, from_user_id=resp, message=message,
+                                         sig_id=rapport.signalement.pk)
+            notification.save()
             rapport.validate = True
             rapport.status='Traité'
             rapport.save()
@@ -449,35 +473,60 @@ def test(request):
     #####
     sj = Signaux.objects.filter(date__month=1).count()
     sf = Signaux.objects.filter(date__month=2).count()
+    sms = Signaux.objects.filter(date__month=3).count()
     sa = Signaux.objects.filter(date__month=4).count()
     sm = Signaux.objects.filter(date__month=5).count()
+    sju = Signaux.objects.filter(date__month=6).count()
+    sjj = Signaux.objects.filter(date__month=7).count()
+    sout = Signaux.objects.filter(date__month=8).count()
+    ssp = Signaux.objects.filter(date__month=9).count()
+    soc = Signaux.objects.filter(date__month=10).count()
+    snv = Signaux.objects.filter(date__month=11).count()
+    sdc = Signaux.objects.filter(date__month=12).count()
 
-    si = Signaux.objects.filter(category__pk=1).count()
-    signa = Signaux.objects.filter(category__pk=2).count()
     ct = Catégorie.objects.all()
 
-    sigt = 0
-    sigtt=0
-    for i in range(1, si + 1):
-        diff = Signaux.objects.get(category__pk=1, pk=i).date
-        d = datetime.now().date().day - diff.day
-        sigt = sigt + d / si
-    for j in range(si+1,signa+1):
-        diff=Signaux.objects.get(category__pk=2, pk=j).date
-        d = datetime.now().date().day - diff.day
-        sigtt = sigtt + d / signa+1
+    # le nombre des cat
+    x = 1
+    sigs = 0
+    sigss = []
+    liste = []
+    list_id=[]
+    list_id=Catégorie.objects.values_list('id',flat=True)
+    print(list_id)
+    nb_cat=Catégorie.objects.all().count()
 
+    for i in list_id:
+        sig = Signaux.objects.filter(category_id=i).count()
+        liste.append(sig)
+        for j in range(x, sig + x):
+            try:
+                if (Signaux.objects.get(category__pk=i, pk=j).statut == 'Traité'):
+                    diff = Signaux.objects.get(category__pk=i, pk=j).date
+                    try:
+                        d = Rapport.objects.get(signalement__pk=j).date - diff
+                        sigs = sigs + d.days / sig
+                    except Rapport.DoesNotExist:
+                        sigs = 0
+
+                    sigss.append(sigs)
+                    sigs = 0
+                else:
+                    diff = 0
+            except Signaux.DoesNotExist:
+                diff = 0
+
+        x = sig + x
 
     context = {
-        'signa': signa,
-        'si': si,
+        'liste': liste,
+        'sj': sj, 'sf': sf, 'sm': sm, 'sa': sa, 'sms': sms, 'sju': sju, 'sjj': sjj, 'sout': sout, 'ssp': ssp,
+        'soc': soc, 'snv': snv,
+        'sdc': sdc,
+        'sigs': sigss,
         'ct': ct,
-        'sj': sj, 'sf': sf, 'sm': sm, 'sa': sa,
-        'sigt': sigt,
-        'sigtt':sigtt,
-
-        #les notification
-        'cpt':cpt
+        # les notification
+        'cpt': cpt
     }
 
     return render(request, 'responsable/statistic.html', context)
@@ -497,6 +546,34 @@ def content_signal_archivé(request, id):
         'rapport': rapport,
 
     }
+    if request.method=='POST':
+        restaurer=request.POST.get('restaurer')
+        if restaurer:
+            declaration_restaurer = Signaux(user_id=signal.user_id, titre=signal.titre,
+                                                  category_id=signal.category_id, salle=signal.salle,
+                                                  lieu=signal.lieu, date=signal.date,
+                                                  heure=signal.heure, send=signal.send,
+                                                  description=signal.description, image=signal.image,
+                                                  statut=signal.statut, validate=signal.validate,
+                                                  service_id=signal.service_id,
+                                                  rapport_ajouter=signal.rapport_ajouter, pere=signal.pere,
+                                                  rattacher=signal.rattacher)
+            declaration_restaurer.save()
+            try:
+                rapportt = Rapport_archivé.objects.get(signalement_id=signal.pk)
+                rapport_restaurer = Rapport(user_id=rapportt.user.pk, title=rapportt.title,
+                                                  description=rapportt.description, date=rapportt.date,
+                                                  signalement_id=declaration_restaurer.pk,
+                                                  send=rapportt.send, status=rapportt.status)
+                rapport_restaurer.save()
+                signal.delete()
+                messages.add_message(request, messages.INFO, 'signalement est restauré')
+                return redirect(reverse('archive'))
+
+            except Rapport_archivé.DoesNotExist as e:
+                signal.delete()
+                messages.add_message(request, messages.INFO, 'signalement est restauré')
+                return redirect(reverse('archive'))
     return render(request, 'responsable/content_signal_archive.html', context)
 
 @login_required

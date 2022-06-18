@@ -27,7 +27,7 @@
 
     <nav class="navbar">
         <a href="#home">accueil</a>
-        <a href="#features">catégories</a>
+        <a href="#features">Signalements</a>
         <a href="#review">annonces</a>
          <a href="{% url 'historique' %}">historique</a>
         {% if user.is_responsable %}
@@ -117,7 +117,7 @@
 
 <section class="review" id="review">
 
-    <h1 class="heading"> Les <span>Annonce</span> </h1>
+    <h1 class="heading"> Les <span>Annonces</span> </h1>
 
     <div class="swiper review-slider">
 
@@ -157,7 +157,7 @@
 
 <section class="features" id="features">
 
-    <h1 class="heading"> Les <span>Catégories</span> </h1>
+    <h1 class="heading"> Les <span>Signalements</span> </h1>
 
     <div class="box-container">
        {%  if categorie %}

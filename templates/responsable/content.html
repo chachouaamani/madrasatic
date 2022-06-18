@@ -147,20 +147,7 @@
                       <button  name="rejeter" value="0" class="btn btn-info " >Rejeter</button>
                      <button class="btn btn-info " name="archiver" value="0">archiver</button>
 
-                         <select name="selected_service" style="display: flex;margin-top: 8px; margin-bottom: 0px;width: 100%" >
-                {% if service %}
-                    <option value="{{ declaration.category.service.id }}">{{ declaration.category.service.name }}</option>
-
-
-
-                    {% for service in service %}
-                    <option value="{{ service.id }}" required>{{ service.name }}</option>
-
-                {% endfor %}
-            {% endif %}
-            </select>
                         <button class="btn btn-info " name="valider" value="0">Envoyer à service</button>
-                     <button class="btn btn-info " name="termine" value="0">Marquer comme traité</button>
                     </div>
                   </div>
 

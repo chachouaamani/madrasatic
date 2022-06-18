@@ -46,7 +46,13 @@
 			<li>
 				<a href="{% url 'category_service' %}">
 					<i class='bx bx-table'></i>
-					<span class="text">Tables</span>
+					<span class="text">Gestion des catégories</span>
+				</a>
+			</li>
+            <li>
+				<a href="{% url 'service_table' %}">
+					<i class='bx bx-table'></i>
+					<span class="text">Gestion des services</span>
 				</a>
 			</li>
                <li>
@@ -172,33 +178,7 @@
 						</tbody>
 					</table>
 				</div>
-				<div class="order tab2">
-					<div class="head">
-						<h3>Services</h3>
-						<button class="btn_ajou"><i class='bx bx-plus'></i><a href="{% url 'add_service' %}">AJOUTER</a></button>
-					</div>
-					<table>
-						<thead>
-							<tr>
-								<th>Nom de service</th>
-								<th>Description</th>
-							</tr>
-						</thead>
-						<tbody>
-                        {% if service %}
-                        {% for service in service %}
-							<tr>
 
-								<td>{{ service.name }}</td>
-								<td>... </td>
-                             <td><button class="btn"><a href="{% url 'service_manage' id=service.pk %}">Gérer</a></button></td>
-							</tr>
-                        {% endfor %}
-                        {% endif %}
-
-						</tbody>
-					</table>
-				</div>
 			</div>
 		</main>
 		<!-- MAIN -->

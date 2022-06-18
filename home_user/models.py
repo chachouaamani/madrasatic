@@ -1,14 +1,7 @@
 import datetime
 from datetime import date
-
 from django.db import models
-from django.db.models.signals import post_delete
-from django.dispatch import receiver
-from django.template.defaultfilters import slugify
-from autoslug import  AutoSlugField
 from users.models import Users, Service
-from django.utils.text import slugify
-from django.db.models.signals import post_delete, pre_save
 import os
 
 
@@ -42,7 +35,7 @@ class Signaux(models.Model):
     )
     user = models.ForeignKey(Users, on_delete=models.CASCADE, default=1)
     titre = models.CharField(max_length=50, default="none", null=False)
-    category = models.ForeignKey(Catégorie, on_delete=models.CASCADE, default=1)
+    category = models.ForeignKey(Catégorie, on_delete=models.RESTRICT, default=1)
     lieu = models.CharField(max_length=100, default="None", null=False)
     salle = models.CharField(max_length=100, default="None", null=False)
     date = models.DateField(null=False)
@@ -52,7 +45,7 @@ class Signaux(models.Model):
     validate = models.BooleanField(default=False)
     statut = models.CharField(max_length=50, default="Non_traité",choices=STATUS)
     complement = models.CharField(null=True, default="anything", max_length=200)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, default=1)
+    service = models.ForeignKey(Service, on_delete=models.RESTRICT, default=1)
     image = models.ImageField(null=False, blank=True, upload_to=filepath)
     rapport_ajouter = models.BooleanField(default=False)
     rattacher=models.BooleanField(default=False)
@@ -115,7 +108,7 @@ class notify(models.Model):
 class Signaux_archivé(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE, default=1)
     titre = models.CharField(max_length=50, default="none", null=False)
-    category = models.ForeignKey(Catégorie, on_delete=models.CASCADE, default=1)
+    category = models.ForeignKey(Catégorie, on_delete=models.RESTRICT, default=1)
     lieu = models.CharField(max_length=100, default="None", null=False)
     salle = models.CharField(max_length=100, default="None", null=False)
     date = models.DateField(null=False)
@@ -124,9 +117,11 @@ class Signaux_archivé(models.Model):
     send = models.BooleanField(default=False)
     validate = models.BooleanField(default=False)
     statut = models.CharField(max_length=50, default="Non_traité")
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, default=1)
+    service = models.ForeignKey(Service, on_delete=models.RESTRICT, default=1)
     image = models.ImageField(null=False, blank=True, upload_to=filepath)
-
+    rapport_ajouter = models.BooleanField(default=False)
+    rattacher = models.BooleanField(default=False)
+    pere = models.IntegerField(default=0)
 
 
     def __str__(self):

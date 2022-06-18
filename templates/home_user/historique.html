@@ -30,12 +30,12 @@
     <nav class="navbar">
         {% if user.is_admin %}
         <a href="{% url 'administration' %}">accueil</a>
-        <a href="{% url 'administration' %}#features">catégories</a>
+        <a href="{% url 'administration' %}#features">Signalements</a>
         <a href="{% url 'administration' %}#review">annonces</a>
         <a href="{% url 'historique' %}">historique</a>
         {% else %}
         <a href="{% url 'categorie' %}">accueil</a>
-        <a href="{% url 'categorie' %}#features">catégories</a>
+        <a href="{% url 'categorie' %}#features">Signalements</a>
         <a href="{% url 'categorie' %}#review">annonces</a>
         <a href="{% url 'historique' %}">historique</a>
         {% endif %}
@@ -124,6 +124,8 @@
         <div class="h1 text-center text-dark" id="pageHeaderTitle">Mes signalements</div>
         {%  if sig %}
         {% for sig in sig  %}
+            {% if sig.sent %}
+
         <article class="postcard light blue">
             <a class="postcard__img_link" href="#">
                 {% if sig.image %}
@@ -152,6 +154,49 @@
                 </ul>
             </div>
         </article>
+            {% endif %}
+       {% endfor %}
+    {% endif %}
+    </div>
+</section>
+
+
+<section class="light">
+
+    <div class="container py-2">
+        <div class="h1 text-center text-dark" id="pageHeaderTitle">Brouillons</div>
+        {%  if sig %}
+        {% for sig in sig  %}
+            {%  if not sig.sent %}
+        <article class="postcard light blue">
+            <a class="postcard__img_link" href="#">
+                {% if sig.image %}
+                <img class="postcard__img" src="{{ sig.image.url }}" alt="Image Title" />
+                {% endif %}
+            </a>
+            <div class="postcard__text t-dark">
+                <h1 class="postcard__title blue"><a href="#">{{ sig.titre }}</a></h1>
+                <div class="postcard__subtitle small">
+                    <time datetime="2020-05-25 12:00:00">
+                        <i class="fas fa-calendar-alt mr-2"></i>{{ sig.date }}
+                    </time>
+                </div>
+                <div class="postcard__bar"></div>
+                <div class="postcard__preview-txt">{{ sig.description }}</div>
+                <ul class="postcard__tagbox">
+                    <li class="tag__item"><i class="fas fa-tag mr-2"></i>{{ sig.statut }}</li>
+                    <li class="tag__item"><i class="fas fa-clock mr-2"></i>{{ sig.heure }}</li>
+                    <li class="tag__item play blue">
+                        {% if sig.sent %}
+                        <a href="{% url 'signal_content' id=sig.pk %}"><i class="fas fa-play mr-2"></i>consulter</a>
+                         {% else %}
+                        <a href="{% url 'signal_historique' id=sig.pk %}"><i class="fas fa-play mr-2"></i>consulter</a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </article>
+            {% endif %}
        {% endfor %}
     {% endif %}
     </div>

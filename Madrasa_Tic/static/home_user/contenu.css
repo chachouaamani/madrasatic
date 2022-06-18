@@ -305,6 +305,8 @@ body{
 .rapport{
     position: relative;
     right: 130px;
+    width: 300%;
+    height: 300%;
 }
 .row{
     align-items: center;

@@ -309,7 +309,7 @@ def add_announcement(request):
 
 
             annonce = Annonce(user_id=user, titre=Titre, description=Description, date_debut=Date_debut,
-                              date_fin=Date_fin,send=True,status='En_cours')
+                              date_fin=Date_fin,send=True)
 
             if len(request.FILES) != 0:
                 annonce.image = request.FILES['image']
@@ -556,7 +556,6 @@ def annonce_historique(request, id):
         if valider:
 
             annonce.send = True
-            annonce.status='En_cours'
             annonce.titre=titre
             annonce.description=description
             if len(date_fin)!=0 :
